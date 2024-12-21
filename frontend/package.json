@@ -1,6 +1,9 @@
 {
   "scripts": {
-    "build:css": "postcss src/styles.css -o public/css/styles.css --minify"
+    "dev": "npm run build && npm start",
+    "build": "npm run build:css",
+    "build:css": "postcss src/styles.css -o public/css/styles.css --minify",
+    "start": "node server.js"
   },
   "dependencies": {
     "@tailwindcss/forms": "^0.5.9",
