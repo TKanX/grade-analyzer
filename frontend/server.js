@@ -24,20 +24,20 @@ app.set('view engine', 'ejs');
 
 // Start the server
 const server = app.listen(port, host, () => {
-  console.log(`Server is running on http://${host}:${port}`);
+  console.log(`Frontend server is running on http://${host}:${port}`);
 });
 
 // Handle SIGTERM gracefully
 process.on('SIGTERM', async () => {
   console.info('SIGTERM signal received.');
-  console.log('Closing server...');
+  console.log('Closing frontend server...');
   await app.close();
 });
 
 // Handle SIGINT gracefully
 process.on('SIGINT', async () => {
   console.info('SIGINT signal received.');
-  console.log('Closing server...');
+  console.log('Closing frontend server...');
   await app.close();
 });
 

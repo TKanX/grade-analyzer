@@ -20,20 +20,20 @@ app.set('trust proxy', 1);
 
 // Start the server
 const server = app.listen(port, host, () => {
-  console.log(`Server is running on http://${host}:${port}`);
+  console.log(`Backend server is running on http://${host}:${port}`);
 });
 
 // Handle SIGTERM gracefully
 process.on('SIGTERM', async () => {
   console.info('SIGTERM signal received.');
-  console.log('Closing server...');
+  console.log('Closing backend server...');
   await app.close();
 });
 
 // Handle SIGINT gracefully
 process.on('SIGINT', async () => {
   console.info('SIGINT signal received.');
-  console.log('Closing server...');
+  console.log('Closing backend server...');
   await app.close();
 });
 

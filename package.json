@@ -1,5 +1,8 @@
 {
   "scripts": {
+    "dev": "npm run build && npm start",
+    "build": "cd frontend && npm run build",
+    "start": "node index.js",
     "lint": "eslint",
     "format": "prettier --write ."
   },
