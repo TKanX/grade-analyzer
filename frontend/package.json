@@ -1,4 +1,7 @@
 {
+  "scripts": {
+    "build:css": "postcss src/styles.css -o public/css/styles.css --minify"
+  },
   "dependencies": {
     "@tailwindcss/forms": "^0.5.9",
     "autoprefixer": "^10.4.20",
