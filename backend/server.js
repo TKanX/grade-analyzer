@@ -8,6 +8,7 @@ require('dotenv').config();
 
 // Load required modules
 const express = require('express');
+const bodyParser = require('body-parser');
 const db = require('./src/db/db');
 
 const DEFAULT_PORT = 5000;
@@ -21,6 +22,9 @@ app.set('trust proxy', 1);
 
 // Connect to the database
 db.connect();
+
+// Middleware setup
+app.use(bodyParser.json());
 
 // Start the server
 const server = app.listen(port, host, () => {
