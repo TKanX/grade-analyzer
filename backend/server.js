@@ -10,6 +10,7 @@ require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
 const preprocessRequestDetailsMiddleware = require('./src/middlewares/preprocessRequestDetailsMiddleware');
+const responseMiddleware = require('./src/middlewares/responseMiddleware');
 const db = require('./src/db/db');
 
 const DEFAULT_PORT = 5000;
@@ -27,6 +28,7 @@ db.connect();
 // Middleware setup
 app.use(bodyParser.json());
 app.use(preprocessRequestDetailsMiddleware);
+app.use(responseMiddleware);
 
 // Start the server
 const server = app.listen(port, host, () => {
