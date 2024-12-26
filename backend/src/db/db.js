@@ -37,7 +37,7 @@ const disconnect = async () => {
     return;
   }
 
-  console.log('Closing database connection');
+  console.log('Closing database connection...');
   await mongoose.disconnect();
 
   isConnected = false;
