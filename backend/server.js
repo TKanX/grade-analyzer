@@ -11,6 +11,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const preprocessRequestDetailsMiddleware = require('./src/middlewares/preprocessRequestDetailsMiddleware');
 const responseMiddleware = require('./src/middlewares/responseMiddleware');
+const authMiddleware = require('./src/middlewares/authMiddleware');
 const db = require('./src/db/db');
 
 const DEFAULT_PORT = 5000;
@@ -29,6 +30,7 @@ db.connect();
 app.use(bodyParser.json());
 app.use(preprocessRequestDetailsMiddleware);
 app.use(responseMiddleware);
+app.use(authMiddleware);
 
 // Start the server
 const server = app.listen(port, host, () => {
