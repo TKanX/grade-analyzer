@@ -13,6 +13,12 @@ const settingsSchema = new mongoose.Schema({
     required: true,
     default: '12h',
   },
+  dateFormat: {
+    type: String,
+    enum: ['MM-DD-YYYY', 'DD-MM-YYYY', 'YYYY-MM-DD'],
+    required: true,
+    default: 'MM-DD-YYYY',
+  },
   theme: {
     type: String,
     enum: ['light', 'dark', 'system'],
