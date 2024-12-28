@@ -3,7 +3,7 @@
  * @description Service for hashing and comparing passwords.
  */
 
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 
 const SALT_ROUNDS = 10; // The number of salt rounds to use for hashing
 

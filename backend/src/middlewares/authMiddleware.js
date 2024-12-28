@@ -1,6 +1,6 @@
 /**
  * @fileoverview Authentication Middleware
- * @description Middleware for authenticating requests.
+ * @description Middleware for user authentication.
  */
 
 const jwtService = require('../services/jwtService');
