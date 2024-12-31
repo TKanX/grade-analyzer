@@ -21,6 +21,7 @@ The API has specific rate limits for different functionalities to ensure fair us
    - **Description**: Users can attempt to log in up to 15 times within a 1-hour period.
 
 3. **Other API Features**:
+
    - **Rate Limit**: 150 requests every 5 minutes per IP address.
    - **Description**: For all other API functionalities not explicitly listed, users can send up to 150 requests every 5 minutes.
 
@@ -32,8 +33,15 @@ If the rate limit is exceeded, the server will respond with a `429 Too Many Requ
 
 ### Table of Contents
 
-- [Authentication Endpoints](#authentication-endpoints)
-  - [User Registration](#user-registration)
+- [API Documentation](#api-documentation)
+  - [Authentication](#authentication)
+  - [Rate Limiting](#rate-limiting)
+    - [Response to Rate Limit Exceedance](#response-to-rate-limit-exceedance)
+  - [Endpoints](#endpoints)
+    - [Table of Contents](#table-of-contents)
+    - [Authentication Endpoints](#authentication-endpoints)
+      - [User Registration](#user-registration)
+      - [Complete Registration](#complete-registration)
 
 ### Authentication Endpoints
 
@@ -86,6 +94,139 @@ If the rate limit is exceeded, the server will respond with a `429 Too Many Requ
       "message": "Error sending verification email.",
       "error": {
         "code": "SEND_EMAIL_ERROR",
+        "details": {}
+      }
+    }
+    ```
+
+#### Complete Registration
+
+- **URL:** `/api/auth/complete-registration`
+- **Method:** `POST`
+
+- **Request Body**:
+
+  ```json
+  {
+    "token": "JWT_TOKEN (received in email)",
+    "username": "username",
+    "password": "password"
+  }
+  ```
+
+- **Response**:
+
+  - **Status:** `200 OK`
+
+    ```json
+    {
+      "status": "success",
+      "data": {},
+      "message": "User created successfully."
+    }
+    ```
+
+    > **Note:** The user data will be returned in the response (`data` field).
+
+  - **Status:** `400 Bad Request`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Invalid username.",
+      "error": {
+        "code": "INVALID_USERNAME",
+        "details": {}
+      }
+    }
+    ```
+
+  - **Status:** `400 Bad Request`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Invalid password.",
+      "error": {
+        "code": "INVALID_PASSWORD",
+        "details": {}
+      }
+    }
+    ```
+
+  - **Status:** `400 Bad Request`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Invalid token.",
+      "error": {
+        "code": "INVALID_TOKEN",
+        "details": {}
+      }
+    }
+    ```
+
+  - **Status:** `401 Unauthorized`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Token expired.",
+      "error": {
+        "code": "TOKEN_EXPIRED",
+        "details": {}
+      }
+    }
+    ```
+
+  - **Status:** `500 Internal Server Error`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Error verifying token.",
+      "error": {
+        "code": "VERIFY_TOKEN_ERROR",
+        "details": {}
+      }
+    }
+    ```
+
+  - **Status:** `409 Conflict`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Email already in use.",
+      "error": {
+        "code": "EMAIL_IN_USE",
+        "details": {}
+      }
+    }
+    ```
+
+  - **Status:** `409 Conflict`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Username already in use.",
+      "error": {
+        "code": "USERNAME_IN_USE",
+        "details": {}
+      }
+    }
+    ```
+
+  - **Status:** `500 Internal Server Error`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Error creating user.",
+      "error": {
+        "code": "CREATE_USER_ERROR",
         "details": {}
       }
     }

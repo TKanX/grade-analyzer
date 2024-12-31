@@ -18,5 +18,10 @@ router.post(
   rateLimiter(RATE_LIMIT_MAX_3, RATE_LIMIT_WINDOW_2_MINUTES),
   authController.registerUser,
 );
+router.post(
+  '/complete-registration',
+  rateLimiter(),
+  authController.completeRegistration,
+);
 
 module.exports = router;

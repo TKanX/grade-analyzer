@@ -1,5 +1,5 @@
 /**
- * @fileoverview Auth Controller
+ * @fileoverview Auth Controllers
  * @description Controllers for user authentication.
  */
 
@@ -43,6 +43,78 @@ const registerUser = async (req, res) => {
   }
 };
 
+/**
+ * @function completeRegistration - Handle user registration completion request.
+ * @param {Request} req - The request object.
+ * @param {Response} res - The response object.
+ */
+const completeRegistration = async (req, res) => {
+  const { token, username, password } = req.body;
+
+  let email;
+
+  // Verify JWT token
+  try {
+    const payload = jwtService.verifyToken(token, process.env.JWT_SECRET);
+    if (!payload.email) {
+      return res.badRequest('Invalid token.', 'INVALID_TOKEN');
+    }
+    email = payload.email;
+  } catch (error) {
+    if (error.name === 'TokenExpiredError') {
+      return res.unauthorized('Token expired.', 'TOKEN_EXPIRED');
+    }
+    if (error.name === 'JsonWebTokenError') {
+      return res.badRequest('Invalid token.', 'INVALID_TOKEN');
+    } else {
+      return res.internalServerError(
+        'Error verifying token.',
+        'VERIFY_TOKEN_ERROR',
+      );
+    }
+  }
+
+  // Check if the username is valid
+  if (!username || !validationUtils.validateUsername(username)) {
+    return res.badRequest('Invalid username.', 'INVALID_USERNAME');
+  }
+
+  // Check if the password is valid
+  if (!password || !validationUtils.validatePassword(password)) {
+    return res.badRequest('Invalid password.', 'INVALID_PASSWORD');
+  }
+
+  // Check if the email is already in use
+  const existingEmail = await userService.getUserByEmail(email);
+  if (existingEmail) {
+    return res.conflict('Email already in use.', 'EMAIL_IN_USE');
+  }
+
+  // Check if the username is already in use
+  const existingUsername = await userService.getUserByUsername(username);
+  if (existingUsername) {
+    return res.conflict('Username already in use.', 'USERNAME_IN_USE');
+  }
+
+  // Create the user
+  try {
+    const user = await userService.createUser({ email, username, password });
+
+    // Log the user's account creation
+    userService.addSafetyRecordById(
+      user._id,
+      'ACCOUNT_CREATED',
+      req.ip,
+      req.headers['user-agent'],
+    );
+
+    return res.success(user, 'User created successfully.');
+  } catch (error) {
+    return res.internalServerError('Error creating user.', 'CREATE_USER_ERROR');
+  }
+};
+
 module.exports = {
   registerUser,
+  completeRegistration,
 };
