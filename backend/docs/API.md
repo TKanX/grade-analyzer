@@ -42,6 +42,7 @@ If the rate limit is exceeded, the server will respond with a `429 Too Many Requ
     - [Authentication Endpoints](#authentication-endpoints)
       - [User Registration](#user-registration)
       - [Complete Registration](#complete-registration)
+      - [User Login](#user-login)
 
 ### Authentication Endpoints
 
@@ -227,6 +228,103 @@ If the rate limit is exceeded, the server will respond with a `429 Too Many Requ
       "message": "Error creating user.",
       "error": {
         "code": "CREATE_USER_ERROR",
+        "details": {}
+      }
+    }
+    ```
+
+#### User Login
+
+- **URL:** `/api/auth/login`
+- **Method:** `POST`
+
+- **Request Body**:
+
+  ```json
+  {
+    "identifier": "email or username",
+    "password": "password"
+  }
+  ```
+
+- **Response**:
+
+  - **Status:** `200 OK`
+
+    ```json
+    {
+      "status": "success",
+      "data": {
+        "user": {},
+        "refreshToken": "JWT_TOKEN",
+        "accessToken": "JWT_TOKEN"
+      },
+      "message": "User logged in successfully."
+    }
+    ```
+
+    > **Note:** The user data, refresh token, and access token will be returned in the response (`data` field). The access token should be used to access protected routes, and the refresh token should be used to generate a new access token when it expires.
+
+  - **Status:** `400 Bad Request`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Invalid email or username.",
+      "error": {
+        "code": "INVALID_IDENTIFIER",
+        "details": {}
+      }
+    }
+    ```
+
+  - **Status:** `401 Unauthorized`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Invalid password.",
+      "error": {
+        "code": "INVALID_PASSWORD",
+        "details": {}
+      }
+    }
+    ```
+
+  - **Status:** `404 Not Found`
+
+    ```json
+    {
+      "status": "error",
+      "message": "User not found.",
+      "error": {
+        "code": "USER_NOT_FOUND",
+        "details": {}
+      }
+    }
+    ```
+
+  - **Status:** `403 Forbidden`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Account locked.",
+      "error": {
+        "code": "ACCOUNT_LOCKED",
+        "details": {}
+      }
+    }
+    ```
+
+  - **Status:** `500 Internal Server Error`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Error logging in user.",
+      "error": {
+        "code": "LOGIN_USER_ERROR",
         "details": {}
       }
     }

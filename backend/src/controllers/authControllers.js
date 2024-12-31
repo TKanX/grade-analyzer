@@ -114,7 +114,83 @@ const completeRegistration = async (req, res) => {
   }
 };
 
+/**
+ * @function loginUser - Handle user login request.
+ * @param {Request} req - The request object.
+ * @param {Response} res - The response object.
+ */
+const loginUser = async (req, res) => {
+  const { identifier, password } = req.body;
+
+  // Check if the identifier is valid
+  if (!identifier || !validationUtils.validateIdentifier(identifier)) {
+    return res.badRequest('Invalid email or username.', 'INVALID_IDENTIFIER');
+  }
+
+  // Check if the password is valid
+  if (!password || !validationUtils.validatePassword(password)) {
+    return res.badRequest('Invalid password.', 'INVALID_PASSWORD');
+  }
+
+  // Log in the user
+  try {
+    const user = await userService.loginUser(identifier, password);
+    const secret = await userService.getRefreshTokenSecret(
+      user._id,
+      process.env.JWT_SECRET,
+    );
+
+    // Log the user's login
+    userService.addSafetyRecordById(
+      user._id,
+      'LOGIN_SUCCESS',
+      req.ip,
+      req.headers['user-agent'],
+    );
+
+    return res.success(
+      {
+        user,
+        refreshToken: jwtService.generateToken(
+          { userId: user._id },
+          secret,
+          '30d',
+        ),
+        accessToken: jwtService.generateToken(
+          { userId: user._id },
+          process.env.JWT_SECRET,
+          '15m',
+        ),
+      },
+      'User logged in successfully.',
+    );
+  } catch (error) {
+    if (error.message === 'User not found') {
+      return res.notFound('User not found.', 'USER_NOT_FOUND');
+    }
+    if (error.message === 'Invalid password') {
+      // Log the failed login attempt
+      await userService.addSafetyRecordById(
+        error.user._id,
+        'LOGIN_FAILED',
+        req.ip,
+        req.headers['user-agent'],
+      );
+
+      return res.unauthorized('Invalid password.', 'INVALID_PASSWORD');
+    }
+    if (error.message === 'Account locked') {
+      return res.forbidden('Account locked.', 'ACCOUNT_LOCKED');
+    }
+    return res.internalServerError(
+      'Error logging in user.',
+      'LOGIN_USER_ERROR',
+    );
+  }
+};
+
 module.exports = {
   registerUser,
   completeRegistration,
+  loginUser,
 };
