@@ -31,5 +31,6 @@ router.post(
   rateLimiter(RATE_LIMIT_MAX_15, RATE_LIMIT_WINDOW_1_HOUR),
   authControllers.loginUser,
 );
+router.post('/refresh-token', rateLimiter(), authControllers.refreshToken);
 
 module.exports = router;

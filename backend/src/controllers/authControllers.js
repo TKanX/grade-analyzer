@@ -189,8 +189,52 @@ const loginUser = async (req, res) => {
   }
 };
 
+/**
+ * @function refreshToken - Handle refresh token request.
+ * @param {Request} req - The request object.
+ * @param {Response} res - The response object.
+ */
+const refreshToken = async (req, res) => {
+  const { refreshToken: refreshTokenBody } = req.body;
+
+  // Check if the refresh token is valid
+  if (!refreshToken) {
+    return res.badRequest('Invalid refresh token.', 'INVALID_REFRESH_TOKEN');
+  }
+
+  // Verify the refresh token
+  try {
+    const userId = jwtService.decodeToken(refreshTokenBody).userId;
+    const secret = await userService.getRefreshTokenSecret(
+      userId,
+      process.env.JWT_SECRET,
+    );
+    jwtService.verifyToken(refreshTokenBody, secret);
+
+    // Generate a new access token
+    const accessToken = jwtService.generateToken(
+      { userId },
+      process.env.JWT_SECRET,
+      '15m',
+    );
+    return res.success({ accessToken }, 'Access token refreshed successfully.');
+  } catch (error) {
+    if (error.name === 'TokenExpiredError') {
+      return res.unauthorized('Token expired.', 'TOKEN_EXPIRED');
+    }
+    if (error.name === 'JsonWebTokenError') {
+      return res.badRequest('Invalid token.', 'INVALID_TOKEN');
+    }
+    return res.internalServerError(
+      'Error refreshing token.',
+      'REFRESH_TOKEN_ERROR',
+    );
+  }
+};
+
 module.exports = {
   registerUser,
   completeRegistration,
   loginUser,
+  refreshToken,
 };

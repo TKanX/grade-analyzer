@@ -43,6 +43,7 @@ If the rate limit is exceeded, the server will respond with a `429 Too Many Requ
       - [User Registration](#user-registration)
       - [Complete Registration](#complete-registration)
       - [User Login](#user-login)
+      - [Refresh Token](#refresh-token)
 
 ### Authentication Endpoints
 
@@ -325,6 +326,85 @@ If the rate limit is exceeded, the server will respond with a `429 Too Many Requ
       "message": "Error logging in user.",
       "error": {
         "code": "LOGIN_USER_ERROR",
+        "details": {}
+      }
+    }
+    ```
+
+#### Refresh Token
+
+- **URL:** `/api/auth/refresh-token`
+- **Method:** `POST`
+
+- **Request Body**:
+
+  ```json
+  {
+    "refreshToken": "JWT_TOKEN"
+  }
+  ```
+
+- **Response**:
+
+  - **Status:** `200 OK`
+
+    ```json
+    {
+      "status": "success",
+      "data": {
+        "accessToken": "JWT_TOKEN"
+      },
+      "message": "Access token refreshed successfully."
+    }
+    ```
+
+  - **Status:** `400 Bad Request`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Invalid refresh token.",
+      "error": {
+        "code": "INVALID_REFRESH_TOKEN",
+        "details": {}
+      }
+    }
+    ```
+
+  - **Status:** `400 Bad Request`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Invalid token.",
+      "error": {
+        "code": "INVALID_TOKEN",
+        "details": {}
+      }
+    }
+    ```
+
+  - **Status:** `401 Unauthorized`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Token expired.",
+      "error": {
+        "code": "TOKEN_EXPIRED",
+        "details": {}
+      }
+    }
+    ```
+
+  - **Status:** `500 Internal Server Error`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Error refreshing token.",
+      "error": {
+        "code": "REFRESH_TOKEN_ERROR",
         "details": {}
       }
     }
