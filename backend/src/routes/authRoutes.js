@@ -33,4 +33,10 @@ router.post(
 );
 router.post('/refresh-token', rateLimiter(), authControllers.refreshToken);
 
+router.post(
+  '/reset-password',
+  rateLimiter(RATE_LIMIT_MAX_3, RATE_LIMIT_WINDOW_2_MINUTES),
+  authControllers.resetPassword,
+);
+
 module.exports = router;

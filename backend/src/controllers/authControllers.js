@@ -232,9 +232,58 @@ const refreshToken = async (req, res) => {
   }
 };
 
+/**
+ * @function resetPassword - Handle password reset request.
+ * @param {Request} req - The request object.
+ * @param {Response} res - The response object.
+ */
+const resetPassword = async (req, res) => {
+  const { email, callbackUrl } = req.body;
+
+  // Check if the email is valid
+  if (!email || !validationUtils.validateEmail(email)) {
+    return res.badRequest('Invalid email address.', 'INVALID_EMAIL');
+  }
+
+  // Check if the user exists
+  const user = await userService.getUserByEmail(email);
+  if (!user) {
+    return res.notFound('User not found.', 'USER_NOT_FOUND');
+  }
+
+  // Generate a JWT token with the email (for verification)
+  const token = jwtService.generateToken(
+    { email },
+    process.env.JWT_SECRET,
+    '1h',
+  );
+
+  // Send the password reset email
+  try {
+    await emailService.sendEmailVerification(email, token, callbackUrl);
+
+    // Log the password reset request
+    userService.addSafetyRecordById(
+      user._id,
+      'PASSWORD_RESET_REQUESTED',
+      req.ip,
+      req.headers['user-agent'],
+    );
+
+    return res.success(null, 'Password reset email sent.');
+  } catch (error) {
+    console.error('Error sending password reset email: ', error);
+    return res.internalServerError(
+      'Error sending password reset email.',
+      'SEND_EMAIL_ERROR',
+    );
+  }
+};
+
 module.exports = {
   registerUser,
   completeRegistration,
   loginUser,
   refreshToken,
+  resetPassword,
 };

@@ -44,6 +44,7 @@ If the rate limit is exceeded, the server will respond with a `429 Too Many Requ
       - [Complete Registration](#complete-registration)
       - [User Login](#user-login)
       - [Refresh Token](#refresh-token)
+      - [Reset Password](#reset-password)
 
 ### Authentication Endpoints
 
@@ -405,6 +406,73 @@ If the rate limit is exceeded, the server will respond with a `429 Too Many Requ
       "message": "Error refreshing token.",
       "error": {
         "code": "REFRESH_TOKEN_ERROR",
+        "details": {}
+      }
+    }
+    ```
+
+#### Reset Password
+
+- **URL:** `/api/auth/reset-password`
+- **Method:** `POST`
+
+- **Request Body**:
+
+  ```json
+  {
+    "email": "user@example.com",
+    "callbackUrl": "https://example.com/reset-password"
+  }
+  ```
+
+  > **Note:** The `callbackUrl` is the URL will be the url sent to the user in the email for email verification.
+
+- **Response**:
+
+  - **Status:** `200 OK`
+
+    ```json
+    {
+      "status": "success",
+      "data": null,
+      "message": "Password reset email sent."
+    }
+    ```
+
+  - **Status:** `400 Bad Request`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Invalid email address.",
+      "error": {
+        "code": "INVALID_EMAIL",
+        "details": {}
+      }
+    }
+    ```
+
+  - **Status:** `404 Not Found`
+
+    ```json
+    {
+      "status": "error",
+      "message": "User not found.",
+      "error": {
+        "code": "USER_NOT_FOUND",
+        "details": {}
+      }
+    }
+    ```
+
+  - **Status:** `500 Internal Server Error`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Error sending password reset email.",
+      "error": {
+        "code": "SEND_EMAIL_ERROR",
         "details": {}
       }
     }
