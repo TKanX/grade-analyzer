@@ -45,6 +45,7 @@ If the rate limit is exceeded, the server will respond with a `429 Too Many Requ
       - [User Login](#user-login)
       - [Refresh Token](#refresh-token)
       - [Reset Password](#reset-password)
+      - [Complete Reset Password](#complete-reset-password)
 
 ### Authentication Endpoints
 
@@ -473,6 +474,110 @@ If the rate limit is exceeded, the server will respond with a `429 Too Many Requ
       "message": "Error sending password reset email.",
       "error": {
         "code": "SEND_EMAIL_ERROR",
+        "details": {}
+      }
+    }
+    ```
+
+#### Complete Reset Password
+
+- **URL:** `/api/auth/complete-reset-password`
+- **Method:** `POST`
+
+- **Request Body**:
+
+  ```json
+  {
+    "token": "JWT_TOKEN",
+    "password": "new_password"
+  }
+  ```
+
+- **Response**:
+
+  - **Status:** `200 OK`
+
+    ```json
+    {
+      "status": "success",
+      "data": {},
+      "message": "Password reset successfully."
+    }
+    ```
+
+  - **Status:** `400 Bad Request`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Invalid password.",
+      "error": {
+        "code": "INVALID_PASSWORD",
+        "details": {}
+      }
+    }
+    ```
+
+  - **Status:** `400 Bad Request`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Invalid token.",
+      "error": {
+        "code": "INVALID_TOKEN",
+        "details": {}
+      }
+    }
+    ```
+
+  - **Status:** `401 Unauthorized`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Token expired.",
+      "error": {
+        "code": "TOKEN_EXPIRED",
+        "details": {}
+      }
+    }
+    ```
+
+  - **Status:** `500 Internal Server Error`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Error verifying token.",
+      "error": {
+        "code": "VERIFY_TOKEN_ERROR",
+        "details": {}
+      }
+    }
+    ```
+
+  - **Status:** `404 Not Found`
+
+    ```json
+    {
+      "status": "error",
+      "message": "User not found.",
+      "error": {
+        "code": "USER_NOT_FOUND",
+        "details": {}
+      }
+    }
+    ```
+
+  - **Status:** `500 Internal Server Error`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Error resetting password.",
+      "error": {
+        "code": "RESET_PASSWORD_ERROR",
         "details": {}
       }
     }

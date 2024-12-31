@@ -38,5 +38,10 @@ router.post(
   rateLimiter(RATE_LIMIT_MAX_3, RATE_LIMIT_WINDOW_2_MINUTES),
   authControllers.resetPassword,
 );
+router.post(
+  '/complete-reset-password',
+  rateLimiter(),
+  authControllers.completeResetPassword,
+);
 
 module.exports = router;

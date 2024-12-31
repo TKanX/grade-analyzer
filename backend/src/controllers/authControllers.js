@@ -280,10 +280,75 @@ const resetPassword = async (req, res) => {
   }
 };
 
+/**
+ * @function completeResetPassword - Handle password reset completion request.
+ * @param {Request} req - The request object.
+ * @param {Response} res - The response object.
+ */
+const completeResetPassword = async (req, res) => {
+  const { token, password } = req.body;
+
+  let email;
+
+  // Verify JWT token
+  try {
+    const payload = jwtService.verifyToken(token, process.env.JWT_SECRET);
+    if (!payload.email) {
+      return res.badRequest('Invalid token.', 'INVALID_TOKEN');
+    }
+    email = payload.email;
+  } catch (error) {
+    if (error.name === 'TokenExpiredError') {
+      return res.unauthorized('Token expired.', 'TOKEN_EXPIRED');
+    }
+    if (error.name === 'JsonWebTokenError') {
+      return res.badRequest('Invalid token.', 'INVALID_TOKEN');
+    } else {
+      return res.internalServerError(
+        'Error verifying token.',
+        'VERIFY_TOKEN_ERROR',
+      );
+    }
+  }
+
+  // Check if the password is valid
+  if (!password || !validationUtils.validatePassword(password)) {
+    return res.badRequest('Invalid password.', 'INVALID_PASSWORD');
+  }
+
+  // Update the user's password
+  try {
+    const user = await userService.getUserByEmail(email);
+    if (!user) {
+      return res.notFound('User not found.', 'USER_NOT_FOUND');
+    }
+
+    const updatedUser = await userService.updateUserById(user._id, {
+      password,
+    });
+
+    // Log the password reset
+    userService.addSafetyRecordById(
+      user._id,
+      'PASSWORD_RESET_SUCCESS',
+      req.ip,
+      req.headers['user-agent'],
+    );
+
+    return res.success(updatedUser, 'Password reset successfully.');
+  } catch (error) {
+    return res.internalServerError(
+      'Error resetting password.',
+      'RESET_PASSWORD_ERROR',
+    );
+  }
+};
+
 module.exports = {
   registerUser,
   completeRegistration,
   loginUser,
   refreshToken,
   resetPassword,
+  completeResetPassword,
 };
