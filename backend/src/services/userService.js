@@ -122,7 +122,7 @@ const getUserByEmail = async (email) => {
  */
 const getUserByUsername = async (username) => {
   try {
-    const user = await User.findOne({ username });
+    const user = await User.findOne({ username: { $eq: username } });
     return user;
   } catch (error) {
     console.error('Error in getting user by username: ', error);
