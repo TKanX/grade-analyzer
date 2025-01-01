@@ -104,6 +104,10 @@ GradeAnalyzer is a powerful and user-friendly tool designed to help students tra
 
    Open the browser and navigate to the server address to `http://localhost` to access the GradeAnalyzer application. (Use the configured Nginx server address if applicable)
 
+## Usage
+
+The GradeAnalyzer application provides a RESTful API to interact with the GradeAnalyzer backend. The API endpoints are documented in the [API.md](backend/docs/API.md) file.
+
 ## License
 
 This project is licensed under the GNU General Public License v3.0 - see the [LICENSE](LICENSE) file for details.
