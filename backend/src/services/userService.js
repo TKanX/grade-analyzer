@@ -106,7 +106,7 @@ const getUserById = async (userId) => {
  */
 const getUserByEmail = async (email) => {
   try {
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email: { $eq: email } });
     return user;
   } catch (error) {
     console.error('Error in getting user by email: ', error);
