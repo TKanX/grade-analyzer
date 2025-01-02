@@ -20,11 +20,20 @@ router.get('/register/complete', (req, res) => {
 });
 
 router.get('/login', (req, res) => {
-  res.render('pages/auth/login', { redirect: req.query.redirect });
+  return res.render('pages/auth/login', { redirect: req.query.redirect });
 });
 
 router.get('/password-reset', (req, res) => {
-  res.render('pages/auth/password-reset');
+  return res.render('pages/auth/password-reset');
+});
+
+router.get('/password-reset/complete', (req, res) => {
+  if (!req.query.token) {
+    return res.redirect('/password-reset');
+  }
+  return res.render('pages/auth/complete-password-reset', {
+    token: req.query.token,
+  });
 });
 
 module.exports = router;
