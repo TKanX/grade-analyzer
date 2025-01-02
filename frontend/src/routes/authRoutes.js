@@ -19,4 +19,8 @@ router.get('/register/complete', (req, res) => {
   });
 });
 
+router.get('/login', (req, res) => {
+  res.render('pages/auth/login', { redirect: req.query.redirect });
+});
+
 module.exports = router;
