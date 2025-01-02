@@ -23,4 +23,8 @@ router.get('/login', (req, res) => {
   res.render('pages/auth/login', { redirect: req.query.redirect });
 });
 
+router.get('/password-reset', (req, res) => {
+  res.render('pages/auth/password-reset');
+});
+
 module.exports = router;
