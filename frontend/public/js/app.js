@@ -4,6 +4,68 @@
  */
 
 /**
+ * @class Data
+ * @description Handles the data of the application.
+ */
+class Data {
+  /**
+   * @constructor - Initializes the Data class.
+   * @param {Object} app - The App class instance.
+   */
+  constructor(app) {
+    this.app = app;
+    this.key = 'appData';
+    this._data = this.loadData();
+
+    return this.createProxy(this._data);
+  }
+
+  /**
+   * @method createProxy - Creates a proxy for the data object.
+   * @param {Object} data - The data object to proxy.
+   * @returns {Object} - The proxied data object.
+   */
+  createProxy(data) {
+    const handler = {
+      set: (target, prop, value) => {
+        if (typeof value === 'object' && value !== null) {
+          value = this.createProxy(value);
+        }
+        target[prop] = value;
+        this.saveData(); // Save data when any property is set
+        return true;
+      },
+      get: (target, prop) => {
+        if (prop in target) {
+          if (typeof target[prop] === 'object' && target[prop] !== null) {
+            return this.createProxy(target[prop]);
+          }
+          return target[prop];
+        }
+        return undefined;
+      },
+    };
+
+    return new Proxy(data, handler);
+  }
+
+  /**
+   * @method loadData - Loads data from the local-storage.
+   */
+  loadData() {
+    const storedData = localStorage.getItem(this.key);
+    return storedData ? JSON.parse(storedData) : {};
+  }
+
+  /**
+   * @method saveData - Saves data to the local-storage.
+   */
+  saveData() {
+    localStorage.setItem(this.key, JSON.stringify(this._data));
+  }
+}
+
+/**
  * @class Auth
  * @description Handles the authentication of the application.
  */
