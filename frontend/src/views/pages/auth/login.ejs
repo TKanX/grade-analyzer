@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <%- include("../../components/head.ejs") %>
+  <script src="/js/auth.js"></script>
+  <title>GradeAnalyzer | Login</title>
+</head>
+
+<body class="bg-dark-500 h-screen">
+  <main class="flex items-center justify-center h-full px-4">
+    <div class="w-full max-w-md bg-dark-400 rounded-lg p-8 shadow-lg">
+      <h1 class="text-3xl font-bold text-center text-text-light mb-6">Log in</h1>
+      <form id="auth-form" class="space-y-6">
+        <!-- Username or Email input field -->
+        <div class="relative z-0 w-full mb-5 group">
+          <input type="text" name="identifier" id="identifier" class="block py-2.5 px-0 w-full text-sm text-text-light bg-transparent border-0 border-b-2 border-accent appearance-none focus:outline-none focus:ring-0 focus:border-primary peer" placeholder=" " required />
+          <label for="identifier" class="peer-focus:font-medium absolute text-sm text-text-light duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:text-primary peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
+            Username or Email
+          </label>
+        </div>
+
+        <!-- Password input field -->
+        <div class="relative z-0 w-full mb-5 group">
+          <input type="password" name="password" id="password" class="block py-2.5 px-0 w-full text-sm text-text-light bg-transparent border-0 border-b-2 border-accent appearance-none focus:outline-none focus:ring-0 focus:border-primary peer" placeholder=" " required />
+          <label for="password" class="peer-focus:font-medium absolute text-sm text-text-light duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:text-primary peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
+            Password
+          </label>
+        </div>
+
+        <!-- Sign in button -->
+        <button id="login" class="w-full py-3 bg-primary text-text-light rounded-lg font-medium text-sm hover:bg-accent focus:ring-4 focus:outline-none focus:ring-accent transition-shadow shadow-md">
+          Sign in
+        </button>
+      </form>
+
+      <!-- Forgot password link -->
+      <a href="/password-reset" class="block mt-4 text-sm text-center text-accent font-medium hover:underline">Forgot your password?</a>
+
+      <!-- Registration link -->
+      <p class="mt-8 text-sm text-center text-text-light">Don't have an account?
+        <a href="/register" class="text-accent font-medium hover:underline">Register</a>
+      </p>
+    </div>
+  </main>
+
+  <script>
+    // Initialize authentication module
+    const auth = new Authentication(app);
+    const loginButton = document.getElementById("login");
+
+    // Add click event listener to the login button
+    loginButton.addEventListener("click", async (event) => {
+      loginButton.disabled = true; // Disable button during processing
+      event.preventDefault(); // Prevent form submission
+
+      const identifier = document.getElementById("identifier").value; // Get entered identifier (username or email)
+      const password = document.getElementById("password").value; // Get entered password
+
+      // Attempt to log in
+      const response = await auth.login(identifier, password);
+      if (response.status === "success") {
+        app.auth.set(response.data.user._id, response.data.accessToken, response.data.refreshToken);
+        app.location.redirect("<%= redirect %>" || "/dashboard"); // Redirect on success
+      } else {
+        loginButton.disabled = false; // Re-enable button on error
+        app.ui.notification(
+          "alert",
+          response.message,
+          "error",
+          document.getElementById("auth-form"),
+          "login"
+        );
+      }
+    });
+  </script>
+</body>
+
+</html>

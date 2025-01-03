@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <%- include("../../components/head.ejs") %>
+  <script src="/js/auth.js"></script>
+  <title>GradeAnalyzer | Complete Registration</title>
+</head>
+
+<body class="bg-dark-500 h-screen">
+  <main class="flex items-center justify-center h-full px-4">
+    <div class="w-full max-w-md bg-dark-400 rounded-lg p-8 shadow-lg">
+      <h1 class="text-3xl font-bold text-center text-text-light mb-6">Complete Registration</h1>
+      <form id="auth-form" class="space-y-6">
+        <!-- Username input field -->
+        <div class="relative z-0 w-full mb-5 group">
+          <input type="username" name="username" id="username" class="block py-2.5 px-0 w-full text-sm text-text-light bg-transparent border-0 border-b-2 border-accent appearance-none focus:outline-none focus:ring-0 focus:border-primary peer" placeholder=" " required />
+          <label for="username" class="peer-focus:font-medium absolute text-sm text-text-light duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:text-primary peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
+            Username
+          </label>
+        </div>
+
+        <!-- Password input field -->
+        <div class="relative z-0 w-full mb-5 group">
+          <input type="password" name="password" id="password" class="block py-2.5 px-0 w-full text-sm text-text-light bg-transparent border-0 border-b-2 border-accent appearance-none focus:outline-none focus:ring-0 focus:border-primary peer" placeholder=" " required />
+          <label for="password" class="peer-focus:font-medium absolute text-sm text-text-light duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:text-primary peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
+            Password
+          </label>
+        </div>
+
+        <!-- Finish Registration button -->
+        <button id="complete-registration" class="w-full py-3 bg-primary text-text-light rounded-lg font-medium text-sm hover:bg-accent focus:ring-4 focus:outline-none focus:ring-accent transition-shadow shadow-md">
+          Finish
+        </button>
+      </form>
+    </div>
+  </main>
+
+  <script>
+    // Initialize authentication module
+    const auth = new Authentication(app);
+    const completeRegistrationButton = document.getElementById("complete-registration");
+
+    // Add click event listener to the registration button
+    completeRegistrationButton.addEventListener("click", async (event) => {
+      completeRegistrationButton.disabled = true; // Disable button during processing
+      event.preventDefault(); // Prevent form submission
+
+      const token = "<%= token %>"; // Get token for registration
+      const username = document.getElementById("username").value; // Get entered username
+      const password = document.getElementById("password").value; // Get entered password
+
+      // Attempt to complete registration
+      const response = await auth.completeRegistration(token, username, password);
+      if (response.status === "success") {
+        document.getElementById("auth-form").innerHTML = ""; // Clear the form on success
+        app.ui.notification(
+          "alert",
+          response.message,
+          "success",
+          document.getElementById("auth-form"),
+          "register"
+        );
+
+        setTimeout(() => {
+          app.location.redirect("/login"); // Redirect to login after a short delay
+        }, 2000);
+      } else {
+        completeRegistrationButton.disabled = false; // Re-enable button on error
+        // Handle specific errors for invalid username and password
+        if (response.error.code === "INVALID_USERNAME") {
+          app.ui.notification(
+            "list",
+            [
+              "Username must be at least 3 characters long",
+              "Username can only contain letters, numbers, and underscores",
+            ],
+            "error",
+            document.getElementById("auth-form"),
+            "register"
+          );
+          return;
+        } else if (response.error.code === "INVALID_PASSWORD") {
+          app.ui.notification(
+            "list",
+            [
+              "Password must be at least 8 characters long",
+              "Password must contain at least one uppercase letter",
+              "Password must contain at least one lowercase letter",
+              "Password must contain at least one number",
+              "Password must contain at least one special character",
+            ],
+            "error",
+            document.getElementById("auth-form"),
+            "register"
+          );
+          return;
+        }
+        // General error notification
+        app.ui.notification(
+          "alert",
+          response.message,
+          "error",
+          document.getElementById("auth-form"),
+          "register"
+        );
+      }
+    });
+  </script>
+</body>
+
+</html>
