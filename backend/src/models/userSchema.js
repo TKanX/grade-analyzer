@@ -151,6 +151,12 @@ userSchema.index({ username: 1 }, { unique: true });
 // Index the email field
 userSchema.index({ email: 1 }, { unique: true });
 
+// Index the roles field
+userSchema.index({ roles: 1 });
+
+// Index the locked field
+userSchema.index({ locked: 1 });
+
 // Delete the password field when converting to JSON
 userSchema.set('toJSON', {
   transform: (doc, ret) => {
