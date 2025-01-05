@@ -73,13 +73,6 @@ const userSchema = new mongoose.Schema(
       trim: true,
       lowercase: true,
     },
-    displayName: {
-      type: String,
-      required: true,
-      default: function defaultDisplayName() {
-        return this.username;
-      },
-    },
     email: {
       type: String,
       required: true,
@@ -91,20 +84,38 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    avatar: {
-      type: String,
-      required: false,
-      default: '',
-    },
-    school: {
-      type: String,
-      required: false,
-      trim: true,
-    },
-    country: {
-      type: String,
-      required: false,
-      trim: true,
+    profile: {
+      name: {
+        type: String,
+        required: true,
+        trim: true,
+        default: function defaultName() {
+          return this.username;
+        },
+      },
+      avatar: {
+        type: String,
+        required: false,
+        default: '',
+      },
+      birthday: {
+        type: Date,
+        required: false,
+        default: null,
+        max: Date.now(),
+      },
+      school: {
+        type: String,
+        required: false,
+        default: '',
+        trim: true,
+      },
+      country: {
+        type: String,
+        required: false,
+        default: '',
+        trim: true,
+      },
     },
     roles: {
       type: [String],

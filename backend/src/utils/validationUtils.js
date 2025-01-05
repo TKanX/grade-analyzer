@@ -8,7 +8,8 @@ const MAX_EMAIL_LENGTH = 254; // The maximum length of an email address
 const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/; // Check if the email is valid (contains an @ symbol and a period)
 const PASSWORD_REGEX = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\W_])[^\s]{8,}$/; // Check if the password is valid (at least 8 characters, one uppercase letter, one lowercase letter, one number, and one special character)
 const USERNAME_REGEX = /^[a-zA-Z0-9_]{3,}$/; // Check if the username is valid (at least 3 characters, alphanumeric characters and underscores only)
-const DISPLAY_NAME_REGEX = /^(?!.*\s{2,})[^\s](.{0,18}[^\s])?$|^$/; // Check if the display name is valid (no more than 20 characters, no leading or trailing spaces, no consecutive spaces)
+const NAME_REGEX = /^(?!.*\s{2,})[^\s](.{0,18}[^\s])?$|^$/; // Check if the name is valid (no more than 20 characters, no leading or trailing spaces, no consecutive spaces)
+const AVATAR_REGEX = /^data:image\/[a-z]+;base64,/; // Check if the avatar is valid (base64 image)
 const SCHOOL_REGEX = /^[a-zA-Z0-9\s]{3,}$/; // Check if the school name is valid (at least 3 characters, alphanumeric characters and spaces only)
 const COUNTRY_REGEX = /^[a-zA-Z]{2}$/; // Check if the country code is valid (2 letter country code)
 const TIME_FORMAT_REGEX = /^(12h|24h)$/; // Check if the time format is valid (12h or 24h)
@@ -73,17 +74,50 @@ const validateIdentifier = (identifier) => {
 };
 
 /**
- * @function validateDisplayName - Validate a display name.
- * @param {string} displayName - The display name to validate.
- * @returns {boolean} - True if the display name is valid, false otherwise.
+ * @function validateName - Validate a name.
+ * @param {string} name - The name to validate.
+ * @returns {boolean} - True if the name is valid, false otherwise.
  */
-const validateDisplayName = (displayName) => {
-  if (displayName === undefined || displayName === null) {
-    // Check if the display name is empty (null or undefined, but not an empty string)
+const validateName = (name) => {
+  if (name === undefined || name === null) {
+    // Check if the name is empty (null or undefined, but not an empty string)
     return false;
   } else {
-    // Check if the display name matches the regex pattern
-    return DISPLAY_NAME_REGEX.test(displayName);
+    // Check if the name matches the regex pattern
+    return NAME_REGEX.test(name);
+  }
+};
+
+/**
+ * @function validateAvatar - Validate an base64 avatar.
+ * @param {string} avatar - The avatar to validate.
+ * @returns {boolean} - True if the avatar is valid, false otherwise.
+ */
+const validateAvatar = (avatar) => {
+  if (avatar === undefined || avatar === null) {
+    // Check if the avatar is empty (null or undefined, but not an empty string)
+    return false;
+  } else if (avatar === '') {
+    // Check if the avatar is empty (an empty string)
+    return true;
+  } else {
+    // Check if the avatar matches the regex pattern
+    return AVATAR_REGEX.test(avatar);
+  }
+};
+
+/**
+ * @function validateBirthday - Validate a birthday.
+ * @param {string} birthday - The birthday to validate.
+ * @returns {boolean} - True if the birthday is valid, false otherwise.
+ */
+const validateBirthday = (birthday) => {
+  if (birthday === undefined || birthday === null) {
+    // Check if the birthday is empty (null or undefined, but not an empty string)
+    return true;
+  } else {
+    // Check if the birthday is a valid date
+    return !isNaN(Date.parse(birthday));
   }
 };
 
@@ -96,6 +130,9 @@ const validateSchool = (school) => {
   if (school === undefined || school === null) {
     // Check if the school name is empty (null or undefined, but not an empty string)
     return false;
+  } else if (school === '') {
+    // Check if the school name is empty (an empty string)
+    return true;
   } else {
     // Check if the school name matches the regex pattern
     return SCHOOL_REGEX.test(school);
@@ -111,6 +148,9 @@ const validateCountry = (country) => {
   if (country === undefined || country === null) {
     // Check if the country code is empty (null or undefined, but not an empty string)
     return false;
+  } else if (country === '') {
+    // Check if the country code is empty (an empty string)
+    return true;
   } else {
     // Check if the country code matches the regex pattern
     return COUNTRY_REGEX.test(country);
@@ -167,7 +207,9 @@ module.exports = {
   validatePassword,
   validateUsername,
   validateIdentifier,
-  validateDisplayName,
+  validateName,
+  validateAvatar,
+  validateBirthday,
   validateSchool,
   validateCountry,
   validateTimeFormat,
