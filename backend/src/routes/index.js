@@ -12,7 +12,7 @@ const userRoutes = require('./userRoutes');
 router.use('/auth', authRoutes);
 router.use('/users', userRoutes);
 
-router.get('*', (req, res) => {
+router.use('*', (req, res) => {
   res.notFound();
 });
 
