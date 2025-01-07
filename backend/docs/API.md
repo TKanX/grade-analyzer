@@ -50,6 +50,7 @@ If the rate limit is exceeded, the server will respond with a `429 Too Many Requ
       - [Get User](#get-user)
       - [Get Settings](#get-settings)
       - [Get Safety Records](#get-safety-records)
+      - [Update Username](#update-username)
 
 ### Authentication Endpoints
 
@@ -772,3 +773,90 @@ If the rate limit is exceeded, the server will respond with a `429 Too Many Requ
     ```
 
 > **Note:** The endpoint is protected, and the user must be authenticated to access it. The user can only get safety records for their own account.
+
+#### Update Username
+
+- **URL:** `/api/users/:id/username`
+- **Method:** `PUT`
+
+- **Request Parameters**:
+
+  - `id`: The ID of the user to update.
+
+- **Request Body**:
+
+  ```json
+  {
+    "username": "new_username"
+  }
+  ```
+
+  > **Note:** The new username to update.
+
+- **Response**:
+
+  - **Status:** `200 OK`
+
+    ```json
+    {
+      "status": "success",
+      "data": {},
+      "message": "Username updated successfully."
+    }
+    ```
+
+    > **Note:** The updated user data will be returned in the response (`data` field).
+
+  - **Status:** `400 Bad Request`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Invalid username.",
+      "error": {
+        "code": "INVALID_USERNAME",
+        "details": {}
+      }
+    }
+    ```
+
+  - **Status:** `409 Conflict`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Username already taken.",
+      "error": {
+        "code": "USERNAME_TAKEN",
+        "details": {}
+      }
+    }
+    ```
+
+  - **Status:** `403 Forbidden`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Forbidden to update this user.",
+      "error": {
+        "code": "ACCESS_DENIED",
+        "details": {}
+      }
+    }
+    ```
+
+  - **Status:** `500 Internal Server Error`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Error updating username.",
+      "error": {
+        "code": "UPDATE_USERNAME_ERROR",
+        "details": {}
+      }
+    }
+    ```
+
+> **Note:** The endpoint is protected, and the user must be authenticated to access it. The user can only update their own username.

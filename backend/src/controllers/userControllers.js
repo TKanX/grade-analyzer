@@ -103,4 +103,41 @@ const getSafetyRecords = async (req, res) => {
   }
 };
 
-module.exports = { getUser, getSettings, getSafetyRecords };
+/**
+ * @function updateUsername - Update a user's username.
+ * @param {Request} req - The request object.
+ * @param {Response} res - The response object.
+ */
+const updateUsername = async (req, res) => {
+  const { id } = req.params;
+  const { username } = req.body;
+
+  // Check if user is not the same as the requested user
+  if (req.user.userId !== id) {
+    return res.forbidden('Forbidden to update this user.', 'ACCESS_DENIED');
+  }
+
+  // Check if username is valid
+  if (!validationUtils.validateUsername(username)) {
+    return res.badRequest('Invalid username.', 'INVALID_USERNAME');
+  }
+
+  // Check if username is already taken
+  const existingUser = await userService.getUserByUsername(username);
+  if (existingUser) {
+    return res.conflict('Username already taken.', 'USERNAME_TAKEN');
+  }
+
+  // Update username
+  try {
+    const user = await userService.updateUserById(id, { username });
+    return res.success(user, 'Username updated successfully.');
+  } catch (error) {
+    return res.internalServerError(
+      'Error updating username.',
+      'UPDATE_USERNAME_ERROR',
+    );
+  }
+};
+
+module.exports = { getUser, getSettings, getSafetyRecords, updateUsername };
