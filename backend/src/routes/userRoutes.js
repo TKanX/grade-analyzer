@@ -25,5 +25,6 @@ router.put(
   rateLimiter(RATE_LIMIT_MAX_3, RATE_LIMIT_WINDOW_2_MINUTES),
   userControllers.updateEmail,
 );
+router.post('/:id/email/complete', userControllers.completeEmailUpdate);
 
 module.exports = router;

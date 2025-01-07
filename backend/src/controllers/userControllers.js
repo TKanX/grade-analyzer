@@ -186,10 +186,60 @@ const updateEmail = async (req, res) => {
   }
 };
 
+/**
+ * @function completeEmailUpdate - Handle completing an email update request.
+ * @param {Request} req - The request object.
+ * @param {Response} res - The response object.
+ */
+const completeEmailUpdate = async (req, res) => {
+  const { id } = req.params;
+  const { token } = req.body;
+
+  // Check if user is not the same as the requested user
+  if (req.user.userId !== id) {
+    return res.forbidden('Forbidden to update this user.', 'ACCESS_DENIED');
+  }
+
+  let email;
+
+  // Verify the token
+  try {
+    const payload = jwtService.verifyToken(token, process.env.JWT_SECRET);
+    if (!payload.email) {
+      return res.badRequest('Invalid token.', 'INVALID_TOKEN');
+    }
+    email = payload.email;
+  } catch (error) {
+    if (error.name === 'TokenExpiredError') {
+      return res.unauthorized('Token expired.', 'TOKEN_EXPIRED');
+    }
+    if (error.name === 'JsonWebTokenError') {
+      return res.badRequest('Invalid token.', 'INVALID_TOKEN');
+    } else {
+      return res.internalServerError(
+        'Error verifying token.',
+        'VERIFY_TOKEN_ERROR',
+      );
+    }
+  }
+
+  // Update email
+  try {
+    const user = await userService.updateUserById(id, { email });
+    return res.success(user, 'Email updated successfully.');
+  } catch (error) {
+    return res.internalServerError(
+      'Error updating email.',
+      'UPDATE_EMAIL_ERROR',
+    );
+  }
+};
+
 module.exports = {
   getUser,
   getSettings,
   getSafetyRecords,
   updateUsername,
   updateEmail,
+  completeEmailUpdate,
 };

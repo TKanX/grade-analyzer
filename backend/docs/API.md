@@ -52,6 +52,7 @@ If the rate limit is exceeded, the server will respond with a `429 Too Many Requ
       - [Get Safety Records](#get-safety-records)
       - [Update Username](#update-username)
       - [Update Email](#update-email)
+      - [Complete Email Update](#complete-email-update)
 
 ### Authentication Endpoints
 
@@ -941,6 +942,104 @@ If the rate limit is exceeded, the server will respond with a `429 Too Many Requ
       "message": "Error sending verification email.",
       "error": {
         "code": "SEND_EMAIL_ERROR",
+        "details": {}
+      }
+    }
+    ```
+
+> **Note:** The endpoint is protected, and the user must be authenticated to access it. The user can only update their own email.
+
+#### Complete Email Update
+
+- **URL:** `/api/users/:id/email/complete`
+- **Method:** `POST`
+
+- **Request Parameters**:
+
+  - `id`: The ID of the user to update.
+
+- **Request Body**:
+
+  ```json
+  {
+    "token": "JWT_TOKEN"
+  }
+  ```
+
+  > **Note:** The token received in the email for email verification.
+
+- **Response**:
+
+  - **Status:** `200 OK`
+
+    ```json
+    {
+      "status": "success",
+      "data": {},
+      "message": "Email updated successfully."
+    }
+    ```
+
+  - **Status:** `400 Bad Request`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Invalid token.",
+      "error": {
+        "code": "INVALID_TOKEN",
+        "details": {}
+      }
+    }
+    ```
+
+  - **Status:** `401 Unauthorized`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Token expired.",
+      "error": {
+        "code": "TOKEN_EXPIRED",
+        "details": {}
+      }
+    }
+    ```
+
+  - **Status:** `500 Internal Server Error`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Error verifying token.",
+      "error": {
+        "code": "VERIFY_TOKEN_ERROR",
+        "details": {}
+      }
+    }
+    ```
+
+  - **Status:** `403 Forbidden`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Forbidden to update this user.",
+      "error": {
+        "code": "ACCESS_DENIED",
+        "details": {}
+      }
+    }
+    ```
+
+  - **Status:** `500 Internal Server Error`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Error updating email.",
+      "error": {
+        "code": "UPDATE_EMAIL_ERROR",
         "details": {}
       }
     }
