@@ -4,6 +4,8 @@
  */
 
 const userService = require('../services/userService');
+const emailService = require('../services/emailService');
+const jwtService = require('../services/jwtService');
 
 const validationUtils = require('../utils/validationUtils');
 
@@ -140,4 +142,54 @@ const updateUsername = async (req, res) => {
   }
 };
 
-module.exports = { getUser, getSettings, getSafetyRecords, updateUsername };
+/**
+ * @function updateEmail - Handle updating a user's email request.
+ * @param {Request} req - The request object.
+ * @param {Response} res - The response object.
+ */
+const updateEmail = async (req, res) => {
+  const { id } = req.params;
+  const { email, callbackUrl } = req.body;
+
+  // Check if user is not the same as the requested user
+  if (req.user.userId !== id) {
+    return res.forbidden('Forbidden to update this user.', 'ACCESS_DENIED');
+  }
+
+  // Check if email is valid
+  if (!validationUtils.validateEmail(email)) {
+    return res.badRequest('Invalid email.', 'INVALID_EMAIL');
+  }
+
+  // Check if email is already taken
+  const existingUser = await userService.getUserByEmail(email);
+  if (existingUser) {
+    return res.conflict('Email already taken.', 'EMAIL_TAKEN');
+  }
+
+  // Generate a JWT token for email verification
+  const token = jwtService.generateToken(
+    { email },
+    process.env.JWT_SECRET,
+    '1h',
+  );
+
+  // Send email verification
+  try {
+    await emailService.sendEmailVerification(email, token, callbackUrl);
+    return res.success(null, 'Email verification sent successfully.');
+  } catch (error) {
+    return res.internalServerError(
+      'Error sending verification email.',
+      'SEND_EMAIL_ERROR',
+    );
+  }
+};
+
+module.exports = {
+  getUser,
+  getSettings,
+  getSafetyRecords,
+  updateUsername,
+  updateEmail,
+};

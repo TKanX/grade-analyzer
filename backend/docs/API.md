@@ -51,6 +51,7 @@ If the rate limit is exceeded, the server will respond with a `429 Too Many Requ
       - [Get Settings](#get-settings)
       - [Get Safety Records](#get-safety-records)
       - [Update Username](#update-username)
+      - [Update Email](#update-email)
 
 ### Authentication Endpoints
 
@@ -860,3 +861,89 @@ If the rate limit is exceeded, the server will respond with a `429 Too Many Requ
     ```
 
 > **Note:** The endpoint is protected, and the user must be authenticated to access it. The user can only update their own username.
+
+#### Update Email
+
+- **URL:** `/api/users/:id/email`
+- **Method:** `PUT`
+
+- **Request Parameters**:
+
+  - `id`: The ID of the user to update.
+
+- **Request Body**:
+
+  ```json
+  {
+    "email": "new_email",
+    "callbackUrl": "https://example.com/verify-email"
+  }
+  ```
+
+  > **Note:** The new email to update and the `callbackUrl` is the URL will be the url sent to the user in the email for email verification.
+
+- **Response**:
+
+  - **Status:** `200 OK`
+
+    ```json
+    {
+      "status": "success",
+      "data": null,
+      "message": "Email verification sent successfully."
+    }
+    ```
+
+  - **Status:** `400 Bad Request`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Invalid email.",
+      "error": {
+        "code": "INVALID_EMAIL",
+        "details": {}
+      }
+    }
+    ```
+
+  - **Status:** `409 Conflict`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Email already taken.",
+      "error": {
+        "code": "EMAIL_TAKEN",
+        "details": {}
+      }
+    }
+    ```
+
+  - **Status:** `403 Forbidden`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Forbidden to update this user.",
+      "error": {
+        "code": "ACCESS_DENIED",
+        "details": {}
+      }
+    }
+    ```
+
+  - **Status:** `500 Internal Server Error`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Error sending verification email.",
+      "error": {
+        "code": "SEND_EMAIL_ERROR",
+        "details": {}
+      }
+    }
+    ```
+
+> **Note:** The endpoint is protected, and the user must be authenticated to access it. The user can only update their own email.
