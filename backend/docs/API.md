@@ -48,6 +48,7 @@ If the rate limit is exceeded, the server will respond with a `429 Too Many Requ
       - [Complete Reset Password](#complete-reset-password)
     - [User Endpoints](#user-endpoints)
       - [Get User](#get-user)
+      - [Get Safety Records](#get-safety-records)
 
 ### Authentication Endpoints
 
@@ -637,3 +638,85 @@ If the rate limit is exceeded, the server will respond with a `429 Too Many Requ
     ```
 
 > **Note:** The endpoint is protected, and the user must be authenticated to access it.
+
+#### Get Safety Records
+
+- **URL:** `/api/users/:id/safety-records`
+- **Method:** `GET`
+
+- **Request Parameters**:
+
+  - `id`: The ID of the user to get safety records for.
+
+- **Query Parameters**:
+
+  - `limit`: The number of safety records to return (default: 10).
+  - `offset`: The number of safety records to skip (default: 0).
+
+- **Response**:
+
+  - **Status:** `200 OK`
+
+    ```json
+    {
+      "status": "success",
+      "data": [],
+      "message": "Safety records found successfully."
+    }
+    ```
+
+  > **Note:** The safety records will be returned in the response (`data` field).
+
+  - **Status:** `400 Bad Request`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Invalid limit.",
+      "error": {
+        "code": "INVALID_LIMIT",
+        "details": {}
+      }
+    }
+    ```
+
+  - **Status:** `400 Bad Request`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Invalid offset.",
+      "error": {
+        "code": "INVALID_OFFSET",
+        "details": {}
+      }
+    }
+    ```
+
+  - **Status:** `403 Forbidden`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Forbidden to get safety records for this user.",
+      "error": {
+        "code": "ACCESS_DENIED",
+        "details": {}
+      }
+    }
+    ```
+
+  - **Status:** `500 Internal Server Error`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Error getting safety records.",
+      "error": {
+        "code": "GET_SAFETY_RECORDS_ERROR",
+        "details": {}
+      }
+    }
+    ```
+
+> **Note:** The endpoint is protected, and the user must be authenticated to access it. The user can only get safety records for their own account.
