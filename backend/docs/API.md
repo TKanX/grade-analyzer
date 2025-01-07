@@ -866,7 +866,7 @@ If the rate limit is exceeded, the server will respond with a `429 Too Many Requ
 #### Update Email
 
 - **URL:** `/api/users/:id/email`
-- **Method:** `PUT`
+- **Method:** `POST`
 
 - **Request Parameters**:
 
