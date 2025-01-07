@@ -13,6 +13,7 @@ const userControllers = require('../controllers/userControllers');
 router.use(rateLimiter());
 
 router.get('/:id', userControllers.getUser);
+router.get('/:id/settings', userControllers.getSettings);
 router.get('/:id/safety-records', userControllers.getSafetyRecords);
 
 module.exports = router;

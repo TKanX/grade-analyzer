@@ -48,6 +48,7 @@ If the rate limit is exceeded, the server will respond with a `429 Too Many Requ
       - [Complete Reset Password](#complete-reset-password)
     - [User Endpoints](#user-endpoints)
       - [Get User](#get-user)
+      - [Get Settings](#get-settings)
       - [Get Safety Records](#get-safety-records)
 
 ### Authentication Endpoints
@@ -638,6 +639,57 @@ If the rate limit is exceeded, the server will respond with a `429 Too Many Requ
     ```
 
 > **Note:** The endpoint is protected, and the user must be authenticated to access it.
+
+#### Get Settings
+
+- **URL:** `/api/users/:id/settings`
+- **Method:** `GET`
+
+- **Request Parameters**:
+
+  - `id`: The ID of the user to get settings for.
+
+- **Response**:
+
+  - **Status:** `200 OK`
+
+    ```json
+    {
+      "status": "success",
+      "data": {},
+      "message": "Settings found successfully."
+    }
+    ```
+
+  > **Note:** The settings will be returned in the response (`data` field).
+
+  - **Status:** `403 Forbidden`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Forbidden to get settings for this user.",
+      "error": {
+        "code": "ACCESS_DENIED",
+        "details": {}
+      }
+    }
+    ```
+
+  - **Status:** `500 Internal Server Error`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Error getting settings.",
+      "error": {
+        "code": "GET_SETTINGS_ERROR",
+        "details": {}
+      }
+    }
+    ```
+
+> **Note:** The endpoint is protected, and the user must be authenticated to access it. The user can only get settings for their own account.
 
 #### Get Safety Records
 

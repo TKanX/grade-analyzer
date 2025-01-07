@@ -32,6 +32,34 @@ const getUser = async (req, res) => {
 };
 
 /**
+ * @function getSettings - Get a user's settings.
+ * @param {Request} req - The request object.
+ * @param {Response} res - The response object.
+ */
+const getSettings = async (req, res) => {
+  const { id } = req.params;
+
+  // Check if user is not the same as the requested user
+  if (req.user.userId !== id) {
+    return res.forbidden(
+      'Forbidden to get settings for this user.',
+      'ACCESS_DENIED',
+    );
+  }
+
+  try {
+    const settings = await userService.getSettingsById(id);
+
+    return res.success(settings, 'Settings found successfully.');
+  } catch (error) {
+    return res.internalServerError(
+      'Error getting settings.',
+      'GET_SETTINGS_ERROR',
+    );
+  }
+};
+
+/**
  * @function getSafetyRecords - Get a user's safety records.
  * @param {Request} req - The request object.
  * @param {Response} res - The response object.
@@ -75,4 +103,4 @@ const getSafetyRecords = async (req, res) => {
   }
 };
 
-module.exports = { getUser, getSafetyRecords };
+module.exports = { getUser, getSettings, getSafetyRecords };
