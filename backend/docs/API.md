@@ -46,6 +46,8 @@ If the rate limit is exceeded, the server will respond with a `429 Too Many Requ
       - [Refresh Token](#refresh-token)
       - [Reset Password](#reset-password)
       - [Complete Reset Password](#complete-reset-password)
+    - [User Endpoints](#user-endpoints)
+      - [Get User](#get-user)
 
 ### Authentication Endpoints
 
@@ -582,3 +584,56 @@ If the rate limit is exceeded, the server will respond with a `429 Too Many Requ
       }
     }
     ```
+
+### User Endpoints
+
+#### Get User
+
+- **URL:** `/api/users/:id`
+- **Method:** `GET`
+
+- **Request Parameters**:
+
+  - `id`: The ID of the user to get.
+
+- **Response**:
+
+  - **Status:** `200 OK`
+
+    ```json
+    {
+      "status": "success",
+      "data": {},
+      "message": "User found successfully."
+    }
+    ```
+
+  > **Note:** The user data will be returned in the response (`data` field).
+
+  - **Status:** `404 Not Found`
+
+    ```json
+    {
+      "status": "error",
+      "message": "User not found.",
+      "error": {
+        "code": "USER_NOT_FOUND",
+        "details": {}
+      }
+    }
+    ```
+
+  - **Status:** `500 Internal Server Error`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Error getting user.",
+      "error": {
+        "code": "GET_USER_ERROR",
+        "details": {}
+      }
+    }
+    ```
+
+> **Note:** The endpoint is protected, and the user must be authenticated to access it.
