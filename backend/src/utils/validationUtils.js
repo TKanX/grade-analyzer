@@ -4,6 +4,7 @@
  */
 
 const MAX_EMAIL_LENGTH = 254; // The maximum length of an email address
+const MAX_LIMIT = 100; // The maximum limit value
 
 const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/; // Check if the email is valid (contains an @ symbol and a period)
 const PASSWORD_REGEX = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\W_])[^\s]{8,}$/; // Check if the password is valid (at least 8 characters, one uppercase letter, one lowercase letter, one number, and one special character)
@@ -71,6 +72,24 @@ const validateUsername = (username) => {
  */
 const validateIdentifier = (identifier) => {
   return validateEmail(identifier) || validateUsername(identifier);
+};
+
+/**
+ * @function validateLimit - Validate a limit query parameter.
+ * @param {string} limit - The limit query parameter to validate.
+ * @returns {boolean} - True if the limit is valid, false otherwise.
+ */
+const validateLimit = (limit) => {
+  return !isNaN(limit) && parseInt(limit) > 0 && parseInt(limit) <= MAX_LIMIT;
+};
+
+/**
+ * @function validateOffset - Validate an offset query parameter.
+ * @param {string} offset - The offset query parameter to validate.
+ * @returns {boolean} - True if the offset is valid, false otherwise.
+ */
+const validateOffset = (offset) => {
+  return !isNaN(offset) && parseInt(offset) >= 0;
 };
 
 /**
@@ -207,6 +226,8 @@ module.exports = {
   validatePassword,
   validateUsername,
   validateIdentifier,
+  validateLimit,
+  validateOffset,
   validateName,
   validateAvatar,
   validateBirthday,
