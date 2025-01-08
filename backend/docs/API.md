@@ -53,6 +53,7 @@ If the rate limit is exceeded, the server will respond with a `429 Too Many Requ
       - [Update Username](#update-username)
       - [Update Email](#update-email)
       - [Complete Email Update](#complete-email-update)
+      - [Update Password](#update-password)
 
 ### Authentication Endpoints
 
@@ -1046,3 +1047,102 @@ If the rate limit is exceeded, the server will respond with a `429 Too Many Requ
     ```
 
 > **Note:** The endpoint is protected, and the user must be authenticated to access it. The user can only update their own email.
+
+#### Update Password
+
+- **URL:** `/api/users/:id/password`
+- **Method:** `PUT`
+
+- **Request Parameters**:
+
+  - `id`: The ID of the user to update.
+
+- **Request Body**:
+
+  ```json
+  {
+    "currentPassword": "current_password",
+    "newPassword": "new_password"
+  }
+  ```
+
+  > **Note:** The current password and the new password to update.
+
+- **Response**:
+
+  - **Status:** `200 OK`
+
+    ```json
+    {
+      "status": "success",
+      "data": {},
+      "message": "Password updated successfully."
+    }
+    ```
+
+  - **Status:** `400 Bad Request`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Invalid password.",
+      "error": {
+        "code": "INVALID_PASSWORD",
+        "details": {}
+      }
+    }
+    ```
+
+  - **Status:** `400 Bad Request`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Invalid new password.",
+      "error": {
+        "code": "INVALID_NEW_PASSWORD",
+        "details": {}
+      }
+    }
+    ```
+
+  - **Status:** `401 Unauthorized`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Incorrect password.",
+      "error": {
+        "code": "INCORRECT_PASSWORD",
+        "details": {}
+      }
+    }
+    ```
+
+  - **Status:** `403 Forbidden`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Forbidden to update this user.",
+      "error": {
+        "code": "ACCESS_DENIED",
+        "details": {}
+      }
+    }
+    ```
+
+  - **Status:** `500 Internal Server Error`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Error updating password.",
+      "error": {
+        "code": "UPDATE_PASSWORD_ERROR",
+        "details": {}
+      }
+    }
+    ```
+
+> **Note:** The endpoint is protected, and the user must be authenticated to access it. The user can only update their own password.

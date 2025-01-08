@@ -26,5 +26,6 @@ router.post(
   userControllers.updateEmail,
 );
 router.post('/:id/email/complete', userControllers.completeEmailUpdate);
+router.put('/:id/password', userControllers.updatePassword);
 
 module.exports = router;

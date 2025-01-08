@@ -7,6 +7,8 @@ const userService = require('../services/userService');
 const emailService = require('../services/emailService');
 const jwtService = require('../services/jwtService');
 
+const { verifyPassword } = require('../services/passwordHashService');
+
 const validationUtils = require('../utils/validationUtils');
 
 const DEFAULT_SAFETY_RECORDS_LIMIT = 10; // The default number of safety records to return
@@ -235,6 +237,56 @@ const completeEmailUpdate = async (req, res) => {
   }
 };
 
+/**
+ * @function updatePassword - Handle updating a user's password.
+ * @param {Request} req - The request object.
+ * @param {Response} res - The response object.
+ */
+const updatePassword = async (req, res) => {
+  const { id } = req.params;
+  const { currentPassword, newPassword } = req.body;
+
+  // Check if user is not the same as the requested user
+  if (req.user.userId !== id) {
+    return res.forbidden('Forbidden to update this user.', 'ACCESS_DENIED');
+  }
+
+  // Check if the current password is valid
+  if (!currentPassword || !validationUtils.validatePassword(currentPassword)) {
+    return res.badRequest('Invalid password.', 'INVALID_PASSWORD');
+  }
+
+  // Check if the new password is valid
+  if (!newPassword || !validationUtils.validatePassword(newPassword)) {
+    return res.badRequest('Invalid new password.', 'INVALID_NEW_PASSWORD');
+  }
+
+  // Check if user exists
+  const user = await userService.getUserById(id);
+  if (!user) {
+    return res.notFound('User not found.', 'USER_NOT_FOUND');
+  }
+
+  // Check if current password is correct
+  const isMatch = await verifyPassword(currentPassword, user.password);
+  if (!isMatch) {
+    return res.unauthorized('Incorrect password.', 'INCORRECT_PASSWORD');
+  }
+
+  // Update password
+  try {
+    await userService.updateUserById(user._id, {
+      password: newPassword,
+    });
+    return res.success(null, 'Password updated successfully.');
+  } catch (error) {
+    return res.internalServerError(
+      'Error updating password.',
+      'UPDATE_PASSWORD_ERROR',
+    );
+  }
+};
+
 module.exports = {
   getUser,
   getSettings,
@@ -242,4 +294,5 @@ module.exports = {
   updateUsername,
   updateEmail,
   completeEmailUpdate,
+  updatePassword,
 };
