@@ -5,6 +5,7 @@
 
 const MAX_EMAIL_LENGTH = 254; // The maximum length of an email address
 const MAX_LIMIT = 100; // The maximum limit value
+const MAX_AVATAR_SIZE = 5242880; // 5MB in bytes (5 * 1024 * 1024)
 
 const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/; // Check if the email is valid (contains an @ symbol and a period)
 const PASSWORD_REGEX = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\W_])[^\s]{8,}$/; // Check if the password is valid (at least 8 characters, one uppercase letter, one lowercase letter, one number, and one special character)
@@ -108,9 +109,9 @@ const validateName = (name) => {
 };
 
 /**
- * @function validateAvatar - Validate an base64 avatar.
+ * @function validateAvatar - Validate a base64 avatar.
  * @param {string} avatar - The avatar to validate.
- * @returns {boolean} - True if the avatar is valid, false otherwise.
+ * @returns {boolean} - True if the avatar is valid and less than 5MB, false otherwise.
  */
 const validateAvatar = (avatar) => {
   if (avatar === undefined || avatar === null) {
@@ -119,9 +120,13 @@ const validateAvatar = (avatar) => {
   } else if (avatar === '') {
     // Check if the avatar is empty (an empty string)
     return true;
-  } else {
+  } else if (!AVATAR_REGEX.test(avatar)) {
     // Check if the avatar matches the regex pattern
-    return AVATAR_REGEX.test(avatar);
+    return false;
+  } else {
+    // Check if the avatar size is less than 5MB
+    const avatarSize = Buffer.from(avatar.split(',')[1], 'base64').length;
+    return avatarSize <= MAX_AVATAR_SIZE;
   }
 };
 
@@ -131,8 +136,11 @@ const validateAvatar = (avatar) => {
  * @returns {boolean} - True if the birthday is valid, false otherwise.
  */
 const validateBirthday = (birthday) => {
-  if (birthday === undefined || birthday === null) {
-    // Check if the birthday is empty (null or undefined, but not an empty string)
+  if (birthday === undefined) {
+    // Check if the birthday is empty (undefined)
+    return false;
+  } else if (birthday === null) {
+    // Check if the birthday is empty (null, but not an empty string)
     return true;
   } else {
     // Check if the birthday is a valid date
