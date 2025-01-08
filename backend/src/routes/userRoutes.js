@@ -28,4 +28,6 @@ router.post(
 router.post('/:id/email/complete', userControllers.completeEmailUpdate);
 router.put('/:id/password', userControllers.updatePassword);
 
+router.patch('/:id/profile', userControllers.updateProfile);
+
 module.exports = router;

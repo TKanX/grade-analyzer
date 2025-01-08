@@ -261,12 +261,6 @@ const updatePassword = async (req, res) => {
     return res.badRequest('Invalid new password.', 'INVALID_NEW_PASSWORD');
   }
 
-  // Check if user exists
-  const user = await userService.getUserById(id);
-  if (!user) {
-    return res.notFound('User not found.', 'USER_NOT_FOUND');
-  }
-
   // Check if current password is correct
   const isMatch = await verifyPassword(currentPassword, user.password);
   if (!isMatch) {
@@ -287,6 +281,83 @@ const updatePassword = async (req, res) => {
   }
 };
 
+/**
+ * @function updateProfile - Update a user's profile.
+ * @param {Request} req - The request object.
+ * @param {Response} res - The response object.
+ */
+const updateProfile = async (req, res) => {
+  const { id } = req.params;
+  const profile = {
+    name: req.body.name,
+    avatar: req.body.avatar,
+    birthday: req.body.birthday,
+    school: req.body.school,
+    country: req.body.country,
+  };
+
+  // Check if user is not the same as the requested user
+  if (req.user.userId !== id) {
+    return res.forbidden('Forbidden to update this user.', 'ACCESS_DENIED');
+  }
+
+  // Remove undefined fields
+  Object.keys(profile).forEach(
+    (key) => profile[key] === undefined && delete profile[key],
+  );
+
+  // Check if the name is valid
+  if (
+    profile.name !== undefined &&
+    !validationUtils.validateName(profile.name)
+  ) {
+    return res.badRequest('Invalid name.', 'INVALID_NAME');
+  }
+
+  // Check if the avatar is valid
+  if (
+    profile.avatar !== undefined &&
+    !validationUtils.validateAvatar(profile.avatar)
+  ) {
+    return res.badRequest('Invalid avatar.', 'INVALID_AVATAR');
+  }
+
+  // Check if the birthday is valid
+  if (
+    profile.birthday !== undefined &&
+    !validationUtils.validateBirthday(profile.birthday)
+  ) {
+    return res.badRequest('Invalid birthday.', 'INVALID_BIRTHDAY');
+  }
+
+  // Check if the school is valid
+  if (
+    profile.school !== undefined &&
+    !validationUtils.validateSchool(profile.school)
+  ) {
+    return res.badRequest('Invalid school.', 'INVALID_SCHOOL');
+  }
+
+  // Check if the country is valid
+  if (
+    profile.country !== undefined &&
+    !validationUtils.validateCountry(profile.country)
+  ) {
+    return res.badRequest('Invalid country.', 'INVALID_COUNTRY');
+  }
+
+  // Update profile
+  try {
+    const user = await userService.updateUserById(id, { profile });
+    return res.success(user, 'Profile updated successfully.');
+  } catch (error) {
+    return res.internalServerError(
+      'Error updating profile.',
+      'UPDATE_PROFILE_ERROR',
+    );
+  }
+};
+
 module.exports = {
   getUser,
   getSettings,
@@ -295,4 +366,5 @@ module.exports = {
   updateEmail,
   completeEmailUpdate,
   updatePassword,
+  updateProfile,
 };

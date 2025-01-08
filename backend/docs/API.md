@@ -54,6 +54,7 @@ If the rate limit is exceeded, the server will respond with a `429 Too Many Requ
       - [Update Email](#update-email)
       - [Complete Email Update](#complete-email-update)
       - [Update Password](#update-password)
+      - [Update Profile](#update-profile)
 
 ### Authentication Endpoints
 
@@ -1146,3 +1147,133 @@ If the rate limit is exceeded, the server will respond with a `429 Too Many Requ
     ```
 
 > **Note:** The endpoint is protected, and the user must be authenticated to access it. The user can only update their own password.
+
+#### Update Profile
+
+- **URL:** `/api/users/:id/profile`
+- **Method:** `PATCH`
+
+- **Request Parameters**:
+
+  - `id`: The ID of the user to update.
+
+- **Request Body**:
+
+  ```json
+  {
+    "name": "new_name",
+    "avatar": "new_avatar_url",
+    "birthday": "new_birthday",
+    "school": "new_school",
+    "country": "new_country"
+  }
+  ```
+
+  > **Note:** The new profile information to update. Fields are optional. `name` and `school` are strings, `avatar` is a Base64-encoded image or a empty string, `birthday` is a date string (e.g., "2000-01-01") or `null`, and `country` is a 2-letter country code (e.g., "US") or an empty string.
+
+- **Response**:
+
+  - **Status:** `200 OK`
+
+    ```json
+    {
+      "status": "success",
+      "data": {},
+      "message": "Profile updated successfully."
+    }
+    ```
+
+    > **Note:** The updated user data will be returned in the response (`data` field).
+
+  - **Status:** `400 Bad Request`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Invalid name.",
+      "error": {
+        "code": "INVALID_NAME",
+        "details": {}
+      }
+    }
+    ```
+
+  - **Status:** `400 Bad Request`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Invalid avatar.",
+      "error": {
+        "code": "INVALID_AVATAR",
+        "details": {}
+      }
+    }
+    ```
+
+  - **Status:** `400 Bad Request`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Invalid birthday.",
+      "error": {
+        "code": "INVALID_BIRTHDAY",
+        "details": {}
+      }
+    }
+    ```
+
+  - **Status:** `400 Bad Request`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Invalid school.",
+      "error": {
+        "code": "INVALID_SCHOOL",
+        "details": {}
+      }
+    }
+    ```
+
+  - **Status:** `400 Bad Request`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Invalid country.",
+      "error": {
+        "code": "INVALID_COUNTRY",
+        "details": {}
+      }
+    }
+    ```
+
+  - **Status:** `403 Forbidden`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Forbidden to update this user.",
+      "error": {
+        "code": "ACCESS_DENIED",
+        "details": {}
+      }
+    }
+    ```
+
+  - **Status:** `500 Internal Server Error`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Error updating profile.",
+      "error": {
+        "code": "UPDATE_PROFILE_ERROR",
+        "details": {}
+      }
+    }
+    ```
+
+> **Note:** The endpoint is protected, and the user must be authenticated to access it. The user can only update their own profile.
