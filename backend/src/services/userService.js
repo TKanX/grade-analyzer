@@ -5,7 +5,8 @@
 
 const mongoose = require('mongoose');
 const User = require('../models/userSchema');
-const { hashPassword, verifyPassword } = require('./passwordHashService');
+
+const { hashPassword, verifyPassword } = require('../utils/passwordHashUtils');
 
 const DEFAULT_SAFETY_RECORDS_LIMIT = 20; // The default number of safety records to return
 

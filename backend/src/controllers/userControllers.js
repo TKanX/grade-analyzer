@@ -6,9 +6,8 @@
 const userService = require('../services/userService');
 const emailService = require('../services/emailService');
 
-const { verifyPassword } = require('../services/passwordHashService');
-
 const jwtUtils = require('../utils/jwtUtils');
+const { verifyPassword } = require('../utils/passwordHashUtils');
 const validationUtils = require('../utils/validationUtils');
 
 const DEFAULT_SAFETY_RECORDS_LIMIT = 10; // The default number of safety records to return
