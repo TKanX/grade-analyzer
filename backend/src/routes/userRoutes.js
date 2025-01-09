@@ -29,5 +29,6 @@ router.post('/:id/email/complete', userControllers.completeEmailUpdate);
 router.put('/:id/password', userControllers.updatePassword);
 
 router.patch('/:id/profile', userControllers.updateProfile);
+router.patch('/:id/settings', userControllers.updateSettings);
 
 module.exports = router;

@@ -180,7 +180,7 @@ const getSettingsById = async (userId) => {
  * @function updateSettingsById - Update the settings of a user by ID.
  * @param {string} userId - The user's ID.
  * @param {Object} settings - The user's settings.
- * @returns {Promise<Object>} - The updated user object.
+ * @returns {Promise<Object>} - The updated user settings.
  * @throws {Error} - Throws an error if the user fails to update.
  */
 const updateSettingsById = async (userId, settings) => {
@@ -190,10 +190,10 @@ const updateSettingsById = async (userId, settings) => {
     const updatedUser = await User.findByIdAndUpdate(
       userId,
       { settings },
-      { new: true },
+      { new: true, projection: { settings: 1 } },
     );
     if (!updatedUser) throw new Error('User not found');
-    return updatedUser;
+    return updatedUser.settings;
   } catch (error) {
     console.error('Error in updating settings by ID: ', error);
     throw error;

@@ -358,6 +358,65 @@ const updateProfile = async (req, res) => {
   }
 };
 
+/**
+ * @function updateSettings - Update a user's settings.
+ * @param {Request} req - The request object.
+ * @param {Response} res - The response object.
+ */
+const updateSettings = async (req, res) => {
+  const { id } = req.params;
+  const settings = {
+    timeFormat: req.body.timeFormat,
+    dateFormat: req.body.dateFormat,
+    theme: req.body.theme,
+  };
+
+  // Check if user is not the same as the requested user
+  if (req.user.userId !== id) {
+    return res.forbidden('Forbidden to update this user.', 'ACCESS_DENIED');
+  }
+
+  // Remove undefined fields
+  Object.keys(settings).forEach(
+    (key) => settings[key] === undefined && delete settings[key],
+  );
+
+  // Check if the time format is valid
+  if (
+    settings.timeFormat !== undefined &&
+    !validationUtils.validateTimeFormat(settings.timeFormat)
+  ) {
+    return res.badRequest('Invalid time format.', 'INVALID_TIME_FORMAT');
+  }
+
+  // Check if the date format is valid
+  if (
+    settings.dateFormat !== undefined &&
+    !validationUtils.validateDateFormat(settings.dateFormat)
+  ) {
+    return res.badRequest('Invalid date format.', 'INVALID_DATE_FORMAT');
+  }
+
+  // Check if the theme is valid
+  if (
+    settings.theme !== undefined &&
+    !validationUtils.validateTheme(settings.theme)
+  ) {
+    return res.badRequest('Invalid theme.', 'INVALID_THEME');
+  }
+
+  // Update settings
+  try {
+    const updatedSettings = await userService.updateSettingsById(id, settings);
+    return res.success(updatedSettings, 'Settings updated successfully.');
+  } catch (error) {
+    return res.internalServerError(
+      'Error updating settings.',
+      'UPDATE_SETTINGS_ERROR',
+    );
+  }
+};
+
 module.exports = {
   getUser,
   getSettings,
@@ -367,4 +426,5 @@ module.exports = {
   completeEmailUpdate,
   updatePassword,
   updateProfile,
+  updateSettings,
 };

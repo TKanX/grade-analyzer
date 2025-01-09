@@ -55,6 +55,7 @@ If the rate limit is exceeded, the server will respond with a `429 Too Many Requ
       - [Complete Email Update](#complete-email-update)
       - [Update Password](#update-password)
       - [Update Profile](#update-profile)
+      - [Update Settings](#update-settings)
 
 ### Authentication Endpoints
 
@@ -982,6 +983,8 @@ If the rate limit is exceeded, the server will respond with a `429 Too Many Requ
     }
     ```
 
+    > **Note:** The updated user data will be returned in the response (`data` field).
+
   - **Status:** `400 Bad Request`
 
     ```json
@@ -1162,7 +1165,7 @@ If the rate limit is exceeded, the server will respond with a `429 Too Many Requ
   ```json
   {
     "name": "new_name",
-    "avatar": "new_avatar_url",
+    "avatar": "new_avatar",
     "birthday": "new_birthday",
     "school": "new_school",
     "country": "new_country"
@@ -1277,3 +1280,105 @@ If the rate limit is exceeded, the server will respond with a `429 Too Many Requ
     ```
 
 > **Note:** The endpoint is protected, and the user must be authenticated to access it. The user can only update their own profile.
+
+#### Update Settings
+
+- **URL:** `/api/users/:id/settings`
+- **Method:** `PATCH`
+
+- **Request Parameters**:
+
+  - `id`: The ID of the user to update.
+
+- **Request Body**:
+
+  ```json
+  {
+    "timeFormat": "12h",
+    "dateFormat": "MM-DD-YYYY",
+    "theme": "system"
+  }
+  ```
+
+  > **Note:** The new settings to update. Fields are optional. `timeFormat` can be "12h" or "24h", `dateFormat` can be "MM-DD-YYYY" or "DD-MM-YYYY" or "YYYY-MM-DD", and `theme` can be "light", "dark", or "system".
+
+- **Response**:
+
+  - **Status:** `200 OK`
+
+    ```json
+    {
+      "status": "success",
+      "data": {},
+      "message": "Settings updated successfully."
+    }
+    ```
+
+    > **Note:** The updated settings will be returned in the response (`data` field).
+
+  - **Status:** `400 Bad Request`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Invalid time format.",
+      "error": {
+        "code": "INVALID_TIME_FORMAT",
+        "details": {}
+      }
+    }
+    ```
+
+  - **Status:** `400 Bad Request`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Invalid date format.",
+      "error": {
+        "code": "INVALID_DATE_FORMAT",
+        "details": {}
+      }
+    }
+    ```
+
+  - **Status:** `400 Bad Request`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Invalid theme.",
+      "error": {
+        "code": "INVALID_THEME",
+        "details": {}
+      }
+    }
+    ```
+
+  - **Status:** `403 Forbidden`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Forbidden to update this user.",
+      "error": {
+        "code": "ACCESS_DENIED",
+        "details": {}
+      }
+    }
+    ```
+
+  - **Status:** `500 Internal Server Error`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Error updating settings.",
+      "error": {
+        "code": "UPDATE_SETTINGS_ERROR",
+        "details": {}
+      }
+    }
+    ```
+
+> **Note:** The endpoint is protected, and the user must be authenticated to access it. The user can only update their own settings.
