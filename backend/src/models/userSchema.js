@@ -125,7 +125,7 @@ const userSchema = new mongoose.Schema(
     roles: {
       type: [String],
       required: true,
-      default: ['USER'],
+      default: [],
     },
     locked: {
       type: Boolean,
