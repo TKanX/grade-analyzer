@@ -348,7 +348,7 @@ const updateProfile = async (req, res) => {
 
   // Update profile
   try {
-    const user = await userService.updateUserById(id, { profile });
+    const user = await userService.updateProfileById(id, profile);
     return res.success(user, 'Profile updated successfully.');
   } catch (error) {
     return res.internalServerError(
