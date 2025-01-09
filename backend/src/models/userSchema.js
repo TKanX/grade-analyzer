@@ -107,7 +107,7 @@ const userSchema = new mongoose.Schema(
         type: Date,
         required: false,
         default: null,
-        max: Date.now(),
+        max: () => Date.now(),
       },
       school: {
         type: String,
