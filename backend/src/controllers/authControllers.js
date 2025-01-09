@@ -5,8 +5,8 @@
 
 const userService = require('../services/userService');
 const emailService = require('../services/emailService');
-const jwtService = require('../services/jwtService');
 
+const jwtUtils = require('../utils/jwtUtils');
 const validationUtils = require('../utils/validationUtils');
 
 /**
@@ -23,11 +23,7 @@ const registerUser = async (req, res) => {
   }
 
   // Generate a JWT token with the email (for verification)
-  const token = jwtService.generateToken(
-    { email },
-    process.env.JWT_SECRET,
-    '1h',
-  );
+  const token = jwtUtils.generateToken({ email }, process.env.JWT_SECRET, '1h');
 
   // Send the verification email
   try {
@@ -55,7 +51,7 @@ const completeRegistration = async (req, res) => {
 
   // Verify JWT token
   try {
-    const payload = jwtService.verifyToken(token, process.env.JWT_SECRET);
+    const payload = jwtUtils.verifyToken(token, process.env.JWT_SECRET);
     if (!payload.email) {
       return res.badRequest('Invalid token.', 'INVALID_TOKEN');
     }
@@ -151,12 +147,12 @@ const loginUser = async (req, res) => {
     return res.success(
       {
         user,
-        refreshToken: jwtService.generateToken(
+        refreshToken: jwtUtils.generateToken(
           { userId: user._id },
           secret,
           '30d',
         ),
-        accessToken: jwtService.generateToken(
+        accessToken: jwtUtils.generateToken(
           { userId: user._id },
           process.env.JWT_SECRET,
           '15m',
@@ -204,15 +200,15 @@ const refreshToken = async (req, res) => {
 
   // Verify the refresh token
   try {
-    const userId = jwtService.decodeToken(refreshTokenBody).userId;
+    const userId = jwtUtils.decodeToken(refreshTokenBody).userId;
     const secret = await userService.getRefreshTokenSecret(
       userId,
       process.env.JWT_SECRET,
     );
-    jwtService.verifyToken(refreshTokenBody, secret);
+    jwtUtils.verifyToken(refreshTokenBody, secret);
 
     // Generate a new access token
-    const accessToken = jwtService.generateToken(
+    const accessToken = jwtUtils.generateToken(
       { userId },
       process.env.JWT_SECRET,
       '15m',
@@ -252,11 +248,7 @@ const resetPassword = async (req, res) => {
   }
 
   // Generate a JWT token with the email (for verification)
-  const token = jwtService.generateToken(
-    { email },
-    process.env.JWT_SECRET,
-    '1h',
-  );
+  const token = jwtUtils.generateToken({ email }, process.env.JWT_SECRET, '1h');
 
   // Send the password reset email
   try {
@@ -292,7 +284,7 @@ const completeResetPassword = async (req, res) => {
 
   // Verify JWT token
   try {
-    const payload = jwtService.verifyToken(token, process.env.JWT_SECRET);
+    const payload = jwtUtils.verifyToken(token, process.env.JWT_SECRET);
     if (!payload.email) {
       return res.badRequest('Invalid token.', 'INVALID_TOKEN');
     }

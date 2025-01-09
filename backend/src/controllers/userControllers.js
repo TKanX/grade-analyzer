@@ -5,10 +5,10 @@
 
 const userService = require('../services/userService');
 const emailService = require('../services/emailService');
-const jwtService = require('../services/jwtService');
 
 const { verifyPassword } = require('../services/passwordHashService');
 
+const jwtUtils = require('../utils/jwtUtils');
 const validationUtils = require('../utils/validationUtils');
 
 const DEFAULT_SAFETY_RECORDS_LIMIT = 10; // The default number of safety records to return
@@ -170,11 +170,7 @@ const updateEmail = async (req, res) => {
   }
 
   // Generate a JWT token for email verification
-  const token = jwtService.generateToken(
-    { email },
-    process.env.JWT_SECRET,
-    '1h',
-  );
+  const token = jwtUtils.generateToken({ email }, process.env.JWT_SECRET, '1h');
 
   // Send email verification
   try {
@@ -206,7 +202,7 @@ const completeEmailUpdate = async (req, res) => {
 
   // Verify the token
   try {
-    const payload = jwtService.verifyToken(token, process.env.JWT_SECRET);
+    const payload = jwtUtils.verifyToken(token, process.env.JWT_SECRET);
     if (!payload.email) {
       return res.badRequest('Invalid token.', 'INVALID_TOKEN');
     }

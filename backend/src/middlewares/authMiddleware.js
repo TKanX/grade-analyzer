@@ -3,7 +3,7 @@
  * @description Middleware for user authentication.
  */
 
-const jwtService = require('../services/jwtService');
+const jwtUtils = require('../utils/jwtUtils');
 
 const PUBLIC_ROUTES = [
   '/api/auth/register',
@@ -37,7 +37,7 @@ const authMiddleware = (req, res, next) => {
   }
 
   try {
-    const payload = jwtService.verifyToken(token, process.env.JWT_SECRET);
+    const payload = jwtUtils.verifyToken(token, process.env.JWT_SECRET);
     req.user = payload;
     return next();
   } catch (error) {
