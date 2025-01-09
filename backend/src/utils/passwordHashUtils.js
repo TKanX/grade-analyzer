@@ -1,6 +1,6 @@
 /**
- * @fileoverview Password Hash Service
- * @description Service for hashing and comparing passwords.
+ * @fileoverview Password Hash Utils
+ * @description Utility functions for hashing and comparing passwords.
  */
 
 const bcrypt = require('bcryptjs');

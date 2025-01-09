@@ -1,6 +1,6 @@
 /**
- * @fileoverview JWT Service
- * @description Service for handling JWT operations.
+ * @fileoverview JWT Utils
+ * @description Utility functions for handling JWT operations.
  */
 
 const jwt = require('jsonwebtoken');

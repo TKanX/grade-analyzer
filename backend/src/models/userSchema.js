@@ -6,26 +6,31 @@
 const mongoose = require('mongoose');
 
 // Define the settings schema
-const settingsSchema = new mongoose.Schema({
-  timeFormat: {
-    type: String,
-    enum: ['12h', '24h'],
-    required: true,
-    default: '12h',
+const settingsSchema = new mongoose.Schema(
+  {
+    timeFormat: {
+      type: String,
+      enum: ['12h', '24h'],
+      required: true,
+      default: '12h',
+    },
+    dateFormat: {
+      type: String,
+      enum: ['MM-DD-YYYY', 'DD-MM-YYYY', 'YYYY-MM-DD'],
+      required: true,
+      default: 'MM-DD-YYYY',
+    },
+    theme: {
+      type: String,
+      enum: ['light', 'dark', 'system'],
+      required: true,
+      default: 'system',
+    },
   },
-  dateFormat: {
-    type: String,
-    enum: ['MM-DD-YYYY', 'DD-MM-YYYY', 'YYYY-MM-DD'],
-    required: true,
-    default: 'MM-DD-YYYY',
+  {
+    _id: false,
   },
-  theme: {
-    type: String,
-    enum: ['light', 'dark', 'system'],
-    required: true,
-    default: 'system',
-  },
-});
+);
 
 // Define the safety record schema
 const safetyRecordSchema = new mongoose.Schema(
@@ -73,13 +78,6 @@ const userSchema = new mongoose.Schema(
       trim: true,
       lowercase: true,
     },
-    displayName: {
-      type: String,
-      required: true,
-      default: function defaultDisplayName() {
-        return this.username;
-      },
-    },
     email: {
       type: String,
       required: true,
@@ -91,25 +89,43 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    avatar: {
-      type: String,
-      required: false,
-      default: '',
-    },
-    school: {
-      type: String,
-      required: false,
-      trim: true,
-    },
-    country: {
-      type: String,
-      required: false,
-      trim: true,
+    profile: {
+      name: {
+        type: String,
+        required: true,
+        trim: true,
+        default: function defaultName() {
+          return this.username;
+        },
+      },
+      avatar: {
+        type: String,
+        required: false,
+        default: '',
+      },
+      birthday: {
+        type: Date,
+        required: false,
+        default: null,
+        max: () => Date.now(),
+      },
+      school: {
+        type: String,
+        required: false,
+        default: '',
+        trim: true,
+      },
+      country: {
+        type: String,
+        required: false,
+        default: '',
+        trim: true,
+      },
     },
     roles: {
       type: [String],
       required: true,
-      default: ['USER'],
+      default: [],
     },
     locked: {
       type: Boolean,
@@ -139,6 +155,12 @@ userSchema.index({ username: 1 }, { unique: true });
 
 // Index the email field
 userSchema.index({ email: 1 }, { unique: true });
+
+// Index the roles field
+userSchema.index({ roles: 1 });
+
+// Index the locked field
+userSchema.index({ locked: 1 });
 
 // Delete the password field when converting to JSON
 userSchema.set('toJSON', {

@@ -6,7 +6,7 @@
 const nodemailer = require('nodemailer');
 
 /**
- * @function sendEmail - Send an email with the specified options.SMTP_
+ * @function sendEmail - Send an email with the specified options.
  * @param {Object} options - The email options.
  * @param {string} options.from - The email address to send the email from.
  * @param {string} options.to - The email address to send the email to.
