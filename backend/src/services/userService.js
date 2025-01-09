@@ -158,6 +158,35 @@ const updateUserById = async (userId, update) => {
 };
 
 /**
+ * @function updateProfileById - Update the profile of a user by ID.
+ * @param {string} userId - The user's ID.
+ * @param {Object} profile - The user's profile to update.
+ * @returns {Promise<Object>} - The updated user object.
+ * @throws {Error} - Throws an error if the user fails to update.
+ */
+const updateProfileById = async (userId, profile) => {
+  if (!mongoose.Types.ObjectId.isValid(userId)) return null;
+
+  const updateFields = {};
+  for (const key in profile) {
+    updateFields[`profile.${key}`] = profile[key];
+  }
+
+  try {
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { $set: updateFields },
+      { new: true },
+    );
+    if (!updatedUser) throw new Error('User not found');
+    return updatedUser;
+  } catch (error) {
+    console.error('Error in updating profile by ID: ', error);
+    throw error;
+  }
+};
+
+/**
  * @function getSettingsById - Get the settings of a user by ID.
  * @param {string} userId - The user's ID.
  * @returns {Promise<Object>} - The user's settings.
@@ -281,6 +310,7 @@ module.exports = {
   getUserByEmail,
   getUserByUsername,
   updateUserById,
+  updateProfileById,
   getSettingsById,
   updateSettingsById,
   addSafetyRecordById,
