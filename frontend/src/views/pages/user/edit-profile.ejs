@@ -4,7 +4,7 @@
 <head>
   <%- include("../../components/head.ejs") %>
   <script src="/js/user.js"></script>
-  <title>GradeAnalyzer | Profile</title>
+  <title>GradeAnalyzer | Edit Profile</title>
 </head>
 
 <body>
@@ -13,15 +13,16 @@
   <main class="sm:ml-64 p-6">
     <h1 class="text-2xl font-semibold mb-6">Profile</h1>
 
-    <div class="bg-background-50 shadow-md rounded-lg p-6">
+    <div id="profile" class="bg-background-50 shadow-md rounded-lg p-6">
       <div class="flex flex-col items-center mb-6">
         <!-- Avatar Display -->
-        <div class="relative w-32 h-32 mb-4">
+        <div onclick="document.getElementById('avatar-input').click()" class="relative w-32 h-32 mb-4">
           <img id="avatar" src="/img/default-avatar.png" alt="User Avatar" class="w-full h-full rounded-full object-cover shadow-lg border-4 border-primary-500">
-          <span class="absolute bottom-0 right-0 bg-primary-500 text-white text-xs px-2 py-1 rounded-full">USER</span>
+          <input type="file" id="avatar-input" class="hidden" accept="image/*">
+          <span class="absolute bottom-0 right-0 bg-primary-500 text-white text-xs px-2 py-1 rounded-full cursor-pointer">Change</span>
         </div>
         <!-- Name -->
-        <h2 id="name" class="text-2xl font-semibold text-text"></h2>
+        <input type="text" id="name" class="w-full text-2xl font-semibold text-text text-center border-b-2 border-transparent rounded-lg focus:border-primary-500">
         <!-- Username -->
         <p class="text-primary-500">@<span id="username"></span></p>
       </div>
@@ -51,7 +52,7 @@
             </svg></span>
           <div>
             <p class="text-sm text-primary-700 font-medium">Country</p>
-            <p id="country" class="text-text font-semibold flex items-center gap-2"></p>
+            <input type="text" id="country" placeholder="2-letter country code" class="w-full text-text font-semibold border-b-2 border-transparent rounded-lg focus:border-primary-500">
           </div>
         </div>
 
@@ -66,7 +67,7 @@
             </svg></span>
           <div>
             <p class="text-sm text-primary-700 font-medium">School</p>
-            <p id="school" class="text-text font-semibold"></p>
+            <input type="text" id="school" class="w-full text-text font-semibold border-b-2 border-transparent rounded-lg focus:border-primary-500">
           </div>
         </div>
 
@@ -87,7 +88,7 @@
             </svg></span>
           <div>
             <p class="text-sm text-primary-700 font-medium">Birthday</p>
-            <p id="birthday" class="text-text font-semibold"></p>
+            <input type="date" id="birthday" class="w-full text-text font-semibold border-b-2 border-transparent rounded-lg focus:border-primary-500">
           </div>
         </div>
 
@@ -110,17 +111,11 @@
         </div>
       </div>
 
-      <!-- Edit Profile Button -->
+      <!-- Save Changes Button -->
       <div class="mt-8 text-center">
-        <a href="/user/edit" class="inline-block bg-primary-500 text-white px-8 py-3 rounded-lg shadow-lg hover:bg-primary-400 transition duration-200">
-          Edit Profile
-        </a>
-      </div>
-
-      <!-- Additional Links -->
-      <div class="mt-6 text-sm text-text">
-        <p class="mb-2">Didn't find what you were looking for?</p>
-        <a href="/user/account" class="text-primary-500 hover:underline">Edit your account settings</a>
+        <button id="update-profile" class="inline-block bg-primary-500 text-white px-8 py-3 rounded-lg shadow-lg hover:bg-primary-400 transition duration-200">
+          Save Changes
+        </button>
       </div>
     </div>
   </main>
@@ -128,43 +123,85 @@
   <script>
     const user = new User(app);
 
+    let profile;
+
     // Fetch user data on page load
     user.getUser().then((response) => {
       if (response.status === "success") {
-        const profile = response.data.profile;
+        profile = response.data.profile;
 
         document.getElementById("avatar").src = profile.avatar || "/img/default-avatar.png";
-        document.getElementById("name").textContent = profile.name;
+        document.getElementById("name").value = profile.name;
         document.getElementById("username").textContent = response.data.username;
         document.getElementById("email").textContent = response.data.email;
-        document.getElementById("school").textContent = profile.school;
-        document.getElementById("birthday").textContent = new Date(profile.birthday).toLocaleDateString();
+        document.getElementById("school").value = profile.school;
+        document.getElementById("birthday").value = new Date(profile.birthday).toISOString().split('T')[0];
         document.getElementById("joined-at").textContent = new Date(response.data.createdAt).toLocaleDateString();
 
         // Render country emoji
         const countryElement = document.getElementById("country");
         const countryCode = profile.country;
         if (countryCode) {
-          const countryEmoji = countryCodeToEmoji(countryCode); // Function to convert country code to emoji
-          countryElement.innerHTML = `<span>${countryEmoji}</span>${profile.country}`;
+          countryElement.value = countryCode;
         }
       }
     });
 
-    // Function to convert country code to emoji
-    function countryCodeToEmoji(countryCode) {
-      countryCode = countryCode.toUpperCase();
-      if (!/^[A-Z]{2}$/.test(countryCode)) {
-        throw new Error("Invalid country code");
+    // Avatar input event listener
+    const avatarInput = document.getElementById("avatar-input");
+    avatarInput.addEventListener("change", async () => {
+      const file = avatarInput.files[0];
+      const reader = new FileReader();
+      reader.onload = () => {
+        document.getElementById("avatar").src = reader.result;
+      };
+      reader.readAsDataURL(file);
+    });
+
+    // Update profile button event listener
+    const updateProfileButton = document.getElementById("update-profile");
+    updateProfileButton.addEventListener("click", async () => {
+      updateProfileButton.disabled = true; // Disable button to prevent multiple clicks
+
+      const updatedProfile = {
+        avatar: document.getElementById("avatar").src,
+        name: document.getElementById("name").value,
+        country: document.getElementById("country").value,
+        school: document.getElementById("school").value,
+        birthday: new Date(document.getElementById("birthday").value).toISOString()
+      };
+
+      // Filter out non-updated fields
+      const filteredProfile = Object.keys(updatedProfile).reduce((acc, key) => {
+        if (key === "avatar" && updatedProfile[key].match(/default-avatar.png/)) {
+          delete acc[key];
+        } else if (updatedProfile[key] !== profile[key]) {
+          acc[key] = updatedProfile[key];
+        }
+        return acc;
+      }, {});
+
+      // Update user profile
+      const response = await user.updateProfile(filteredProfile);
+
+      // Notify user of update status
+      app.ui.notification(
+        "alert",
+        response.message,
+        response.status === "success" ? "success" : "error",
+        document.getElementById("profile"),
+        "profile"
+      );
+
+      // Redirect to user profile page if successful
+      if (response.status === "success") {
+        setTimeout(() => {
+          app.location.redirect("/user");
+        }, 2000);
       }
 
-      const codePoints = [
-        countryCode.charCodeAt(0) - 65 + 0x1F1E6,
-        countryCode.charCodeAt(1) - 65 + 0x1F1E6
-      ];
-
-      return String.fromCodePoint(...codePoints);
-    }
+      updateProfileButton.disabled = false; // Re-enable button
+    });
   </script>
 </body>
 
