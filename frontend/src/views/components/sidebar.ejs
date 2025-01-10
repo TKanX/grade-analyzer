@@ -123,8 +123,19 @@
     };
 
     Object.keys(links).forEach((path) => {
-      if (currentPath === path) {
-        links[path].classList.add("bg-gray-700");
+      if (currentPath.startsWith(path)) {
+        const link = links[path];
+        if (currentPath === path) {
+          link.classList.add("bg-gray-700");
+        }
+        const parentMenu = link.closest("ul");
+        if (parentMenu && parentMenu.classList.contains("hidden")) {
+          parentMenu.classList.remove("hidden");
+          const toggleButton = document.querySelector(`[aria-controls='${parentMenu.id}']`);
+          if (toggleButton) {
+            toggleButton.setAttribute("aria-expanded", "true");
+          }
+        }
       }
     });
   });
