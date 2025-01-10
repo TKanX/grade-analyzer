@@ -246,7 +246,14 @@ class Location {
    * @returns {boolean} - True if the route is public, false otherwise.
    */
   isPublicRoute(route) {
-    return !['/account', '/logout'].includes(route);
+    return ![
+      '/user',
+      '/user/edit',
+      '/user/account',
+      '/user/settings',
+      '/user/security',
+      '/user/logout',
+    ].includes(route);
   }
 
   /**
