@@ -8,6 +8,10 @@ const router = express.Router();
 
 const authRoutes = require('./authRoutes');
 
+router.get('/dashboard', (req, res) => {
+  res.render('pages/dashboard');
+});
+
 router.use('/', authRoutes);
 
 router.get('/404', (req, res) => {
