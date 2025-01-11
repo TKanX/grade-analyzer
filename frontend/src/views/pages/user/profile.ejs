@@ -134,11 +134,11 @@
         const profile = response.data.profile;
 
         document.getElementById("avatar").src = profile.avatar || "/img/default-avatar.png";
-        document.getElementById("name").textContent = profile.name;
+        document.getElementById("name").textContent = profile.name || response.data.username;
         document.getElementById("username").textContent = response.data.username;
         document.getElementById("email").textContent = response.data.email;
-        document.getElementById("school").textContent = profile.school;
-        document.getElementById("birthday").textContent = new Date(profile.birthday).toLocaleDateString();
+        document.getElementById("school").textContent = profile.school || "N/A";
+        document.getElementById("birthday").textContent = profile.birthday ? new Date(profile.birthday).toISOString().split('T')[0] : "N/A";
         document.getElementById("joined-at").textContent = new Date(response.data.createdAt).toLocaleDateString();
 
         // Render country emoji
@@ -147,6 +147,8 @@
         if (countryCode) {
           const countryEmoji = countryCodeToEmoji(countryCode); // Function to convert country code to emoji
           countryElement.innerHTML = `<span>${countryEmoji}</span>${profile.country}`;
+        } else {
+          countryElement.textContent = "N/A";
         }
       }
     });

@@ -131,11 +131,11 @@
         profile = response.data.profile;
 
         document.getElementById("avatar").src = profile.avatar || "/img/default-avatar.png";
-        document.getElementById("name").value = profile.name;
+        document.getElementById("name").value = profile.name || "";
         document.getElementById("username").textContent = response.data.username;
         document.getElementById("email").textContent = response.data.email;
-        document.getElementById("school").value = profile.school;
-        document.getElementById("birthday").value = new Date(profile.birthday).toISOString().split('T')[0];
+        document.getElementById("school").value = profile.school || "";
+        document.getElementById("birthday").value = profile.birthday ? new Date(profile.birthday).toISOString().split('T')[0] : null;
         document.getElementById("joined-at").textContent = new Date(response.data.createdAt).toLocaleDateString();
 
         // Render country emoji
@@ -168,7 +168,7 @@
         name: document.getElementById("name").value,
         country: document.getElementById("country").value,
         school: document.getElementById("school").value,
-        birthday: new Date(document.getElementById("birthday").value).toISOString()
+        birthday: document.getElementById("birthday").value ? new Date(document.getElementById("birthday").value).toISOString() : null
       };
 
       // Filter out non-updated fields
