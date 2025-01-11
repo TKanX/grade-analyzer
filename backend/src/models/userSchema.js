@@ -120,6 +120,7 @@ const userSchema = new mongoose.Schema(
         required: false,
         default: '',
         trim: true,
+        uppercase: true,
       },
     },
     roles: {
