@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <%- include("../../components/head.ejs") %>
+  <script src="/js/user.js"></script>
+  <title>GradeAnalyzer | Logout</title>
+</head>
+
+<body>
+  <%- include("../../components/sidebar.ejs") %>
+
+  <main class="sm:ml-64 p-6 flex flex-col items-center justify-center h-screen">
+    <!-- Logout Confirmation Section -->
+    <h1 class="text-2xl font-semibold mb-4">Are you sure you want to logout?</h1>
+    <button id="logout-button" class="bg-primary-500 text-white px-4 py-2 rounded hover:bg-red-600 transition-colors duration-200">
+      Logout
+    </button>
+  </main>
+
+  <script>
+    // Logout button event listener
+    const logoutButton = document.getElementById("logout-button");
+    logoutButton.addEventListener("click", async () => {
+      app.auth.destroy(); // Perform logout
+      app.location.redirect("/login"); // Redirect to login page
+    });
+  </script>
+</body>
+
+</html>

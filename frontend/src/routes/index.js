@@ -7,19 +7,26 @@ const express = require('express');
 const router = express.Router();
 
 const authRoutes = require('./authRoutes');
+const userRoutes = require('./userRoutes');
+
+router.get('/dashboard', (req, res) => {
+  return res.render('pages/dashboard');
+});
 
 router.use('/', authRoutes);
 
+router.use('/user', userRoutes);
+
 router.get('/404', (req, res) => {
-  res.render('pages/404', { path: req.query.path || '/' });
+  return res.render('pages/404', { path: req.query.path || '/' });
 });
 
 router.get('/403', (req, res) => {
-  res.render('pages/403', { path: req.query.path || '/' });
+  return res.render('pages/403', { path: req.query.path || '/' });
 });
 
 router.get('*', (req, res) => {
-  res.redirect(`/404?path=${req.path}`);
+  return res.redirect(`/404?path=${req.path}`);
 });
 
 module.exports = router;

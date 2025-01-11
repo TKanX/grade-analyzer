@@ -1,0 +1,213 @@
+<button id="sidebar-toggle" type="button" class="fixed top-0 left-0 z-40 inline-flex items-center p-2 mt-2 ms-3 text-sm text-gray-400 rounded-lg sm:hidden focus:outline-none focus:ring-2 focus:ring-gray-600">
+  <span class="sr-only">Open sidebar</span>
+  <svg class="w-6 h-6" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+    <path clip-rule="evenodd" fill-rule="evenodd" d="M2 4.75A.75.75 0 012.75 4h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 4.75zm0 10.5a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5h-7.5a.75.75 0 01-.75-.75zM2 10a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 10z"></path>
+  </svg>
+</button>
+
+<aside id="sidebar" class="fixed top-0 left-0 z-40 w-64 h-screen transition-transform -translate-x-full sm:translate-x-0 bg-dark" aria-label="Sidebar">
+  <div class="h-full flex flex-col justify-between">
+    <div class="px-3 py-4 overflow-y-auto">
+      <a href="/" class="flex items-center ps-2.5 mb-5">
+        <img src="/img/logo-l.png" class="h-20 me-3" alt="GradeAnalyzer Logo" />
+      </a>
+      <ul class="space-y-2 font-medium">
+        <li>
+          <a href="/dashboard" class="flex items-center p-2 text-white rounded-lg group hover:bg-gray-700">
+            <svg class="w-6 h-6 text-gray-400 transition duration-75 group-hover:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M13.5 2c-.178 0-.356.013-.492.022l-.074.005a1 1 0 0 0-.934.998V11a1 1 0 0 0 1 1h7.975a1 1 0 0 0 .998-.934l.005-.074A7.04 7.04 0 0 0 22 10.5 8.5 8.5 0 0 0 13.5 2Z" />
+              <path d="M11 6.025a1 1 0 0 0-1.065-.998 8.5 8.5 0 1 0 9.038 9.039A1 1 0 0 0 17.975 13H11V6.025Z" />
+            </svg>
+            <span class="ms-3">Dashboard</span>
+          </a>
+        </li>
+        <li>
+          <button type="button" class="flex items-center w-full p-2 text-base text-white transition duration-75 rounded-lg group hover:bg-gray-700" aria-controls="sidebar-user-menu" data-collapse-toggle="sidebar-user-menu">
+            <svg class="flex-shrink-0 w-6 h-6 text-gray-400 transition duration-75 group-hover:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+              <path fill-rule="evenodd" d="M12 4a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm-2 9a4 4 0 0 0-4 4v1a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-1a4 4 0 0 0-4-4h-4Z" clip-rule="evenodd" />
+            </svg>
+            <span class="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap">User</span>
+            <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4" />
+            </svg>
+          </button>
+          <ul id="sidebar-user-menu" class="hidden py-2 space-y-2">
+            <li>
+              <a href="/user" class="flex items-center w-full p-2 text-white transition duration-75 rounded-lg pl-11 group hover:bg-gray-700">
+                <svg class="flex-shrink-0 w-6 h-6 text-gray-400 transition duration-75 group-hover:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+                  <path fill-rule="evenodd" d="M12 20a7.966 7.966 0 0 1-5.002-1.756l.002.001v-.683c0-1.794 1.492-3.25 3.333-3.25h3.334c1.84 0 3.333 1.456 3.333 3.25v.683A7.966 7.966 0 0 1 12 20ZM2 12C2 6.477 6.477 2 12 2s10 4.477 10 10c0 5.5-4.44 9.963-9.932 10h-.138C6.438 21.962 2 17.5 2 12Zm10-5c-1.84 0-3.333 1.455-3.333 3.25S10.159 13.5 12 13.5c1.84 0 3.333-1.455 3.333-3.25S13.841 7 12 7Z" clip-rule="evenodd" />
+                </svg>
+                <span class="flex-1 ms-3 whitespace-nowrap">Profile</span>
+              </a>
+            </li>
+            <li>
+              <a href="/user/account" class="flex items-center w-full p-2 text-white transition duration-75 rounded-lg pl-11 group hover:bg-gray-700">
+                <svg class="flex-shrink-0 w-6 h-6 text-gray-400 transition duration-75 group-hover:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+                  <path fill-rule="evenodd" d="M17 10v1.126c.367.095.714.24 1.032.428l.796-.797 1.415 1.415-.797.796c.188.318.333.665.428 1.032H21v2h-1.126c-.095.367-.24.714-.428 1.032l.797.796-1.415 1.415-.796-.797a3.979 3.979 0 0 1-1.032.428V20h-2v-1.126a3.977 3.977 0 0 1-1.032-.428l-.796.797-1.415-1.415.797-.796A3.975 3.975 0 0 1 12.126 16H11v-2h1.126c.095-.367.24-.714.428-1.032l-.797-.796 1.415-1.415.796.797A3.977 3.977 0 0 1 15 11.126V10h2Zm.406 3.578.016.016c.354.358.574.85.578 1.392v.028a2 2 0 0 1-3.409 1.406l-.01-.012a2 2 0 0 1 2.826-2.83ZM5 8a4 4 0 1 1 7.938.703 7.029 7.029 0 0 0-3.235 3.235A4 4 0 0 1 5 8Zm4.29 5H7a4 4 0 0 0-4 4v1a2 2 0 0 0 2 2h6.101A6.979 6.979 0 0 1 9 15c0-.695.101-1.366.29-2Z" clip-rule="evenodd" />
+                </svg>
+                <span class="flex-1 ms-3 whitespace-nowrap">Account</span>
+              </a>
+            </li>
+            <li>
+              <a href="/user/settings" class="flex items-center w-full p-2 text-white transition duration-75 rounded-lg pl-11 group hover:bg-gray-700">
+                <svg class="flex-shrink-0 w-6 h-6 text-gray-400 transition duration-75 group-hover:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 48 48">
+                  <path d="M41.5 10H35.5" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+                  <path d="M27.5 6V14" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+                  <path d="M27.5 10L5.5 10" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+                  <path d="M13.5 24H5.5" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+                  <path d="M21.5 20V28" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+                  <path d="M43.5 24H21.5" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+                  <path d="M41.5 38H35.5" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+                  <path d="M27.5 34V42" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+                  <path d="M27.5 38H5.5" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+                <span class="flex-1 ms-3 whitespace-nowrap">Settings</span>
+              </a>
+            </li>
+            <li>
+              <a href="/user/security" class="flex items-center w-full p-2 text-white transition duration-75 rounded-lg pl-11 group hover:bg-gray-700">
+                <svg class="flex-shrink-0 w-6 h-6 text-gray-400 transition duration-75 group-hover:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+                  <path fill-rule="evenodd" d="M11.644 3.066a1 1 0 0 1 .712 0l7 2.666A1 1 0 0 1 20 6.68a17.694 17.694 0 0 1-2.023 7.98 17.406 17.406 0 0 1-5.402 6.158 1 1 0 0 1-1.15 0 17.405 17.405 0 0 1-5.403-6.157A17.695 17.695 0 0 1 4 6.68a1 1 0 0 1 .644-.949l7-2.666Zm4.014 7.187a1 1 0 0 0-1.316-1.506l-3.296 2.884-.839-.838a1 1 0 0 0-1.414 1.414l1.5 1.5a1 1 0 0 0 1.366.046l4-3.5Z" clip-rule="evenodd" />
+                </svg>
+                <span class="flex-1 ms-3 whitespace-nowrap">Security</span>
+              </a>
+            </li>
+            <li>
+              <a href="/user/logout" class="flex items-center w-full p-2 text-white transition duration-75 rounded-lg pl-11 group hover:bg-gray-700">
+                <svg class="flex-shrink-0 w-6 h-6 text-gray-400 transition duration-75 group-hover:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12H4m12 0-4 4m4-4-4-4m3-4h2a3 3 0 0 1 3 3v10a3 3 0 0 1-3 3h-2" />
+                </svg>
+                <span class="flex-1 ms-3 whitespace-nowrap">Logout</span>
+              </a>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+
+    <div id="sidebar-user" class="hidden border-t border-gray-700 px-4 py-3">
+      <div class="flex items-center space-between">
+        <div class="flex items-center space-x-3">
+          <a href="/user">
+            <img id="sidebar-user-avatar" class="w-10 h-10 rounded-full" src="/img/default-avatar.png" alt="User Avatar" />
+          </a>
+          <div class="text-sm text-white">
+            <a href="/user">
+              <div id="sidebar-user-name" class="font-medium"></div>
+            </a>
+            <a href="/user">
+              <div class="text-gray-400">@<span id="sidebar-user-username"></span></div>
+            </a>
+          </div>
+        </div>
+        <button onclick="document.getElementById('sidebar-user-mini-menu').classList.toggle('hidden')" class="ml-auto inline-flex items-center text-gray-400 hover:text-white" type="button">
+          <svg width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="12" cy="24" r="3" fill="currentColor" />
+            <circle cx="24" cy="24" r="3" fill="currentColor" />
+            <circle cx="36" cy="24" r="3" fill="currentColor" />
+          </svg>
+        </button>
+        <div id="sidebar-user-mini-menu" class="hidden absolute bottom-16 right-0 z-50 bg-dark border border-gray-700 rounded-lg shadow-lg">
+          <ul class="py-2 text-sm text-gray-400">
+            <li>
+              <a href="/user/account" class="block px-4 py-2 hover:bg-gray-700 hover:text-white">
+                Account
+              </a>
+            </li>
+            <li>
+              <a href="/user/settings" class="block px-4 py-2 hover:bg-gray-700 hover:text-white">
+                Settings
+              </a>
+            </li>
+            <li>
+              <a href="/user/logout" class="block px-4 py-2 hover:bg-gray-700 hover:text-white">
+                Logout
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const sidebarToggle = document.getElementById("sidebar-toggle");
+    const sidebar = document.getElementById("sidebar");
+
+    sidebarToggle.addEventListener("click", function() {
+      sidebar.classList.toggle("-translate-x-full");
+    });
+
+    document.addEventListener("click", function(event) {
+      if (!sidebar.contains(event.target) && !sidebarToggle.contains(event.target)) {
+        sidebar.classList.add("-translate-x-full");
+      }
+    });
+
+    const toggleButtons = document.querySelectorAll("[data-collapse-toggle]");
+
+    toggleButtons.forEach((button) => {
+      button.addEventListener("click", function() {
+        const target = document.getElementById(button.getAttribute("aria-controls"));
+        target.classList.toggle("hidden");
+        const isExpanded = !target.classList.contains("hidden");
+        button.setAttribute("aria-expanded", isExpanded);
+      });
+    });
+
+    const currentPath = app.location.path;
+
+    const links = {
+      "/dashboard": document.querySelector("[href='/dashboard']"),
+      "/user": document.querySelector("[href='/user']"),
+      "/user/account": document.querySelector("[href='/user/account']"),
+      "/user/settings": document.querySelector("[href='/user/settings']"),
+      "/user/security": document.querySelector("[href='/user/security']"),
+      "/user/logout": document.querySelector("[href='/user/logout']"),
+    };
+
+    Object.keys(links).forEach((path) => {
+      if (currentPath.startsWith(path)) {
+        const link = links[path];
+        if (currentPath === path) {
+          link.classList.add("bg-gray-700");
+        }
+        const parentMenu = link.closest("ul");
+        if (parentMenu && parentMenu.classList.contains("hidden")) {
+          parentMenu.classList.remove("hidden");
+          const toggleButton = document.querySelector(`[aria-controls='${parentMenu.id}']`);
+          if (toggleButton) {
+            toggleButton.setAttribute("aria-expanded", "true");
+          }
+        }
+      }
+    });
+
+    if (app.auth.authenticated) {
+      let userData = app.cache.user;
+
+      (async () => {
+        const cacheHit = userData;
+
+        let response;
+
+        if (!userData) {
+          const user = new User(app);
+          response = await user.getUser();
+          userData = response.data;
+          app.cache.user = userData;
+        }
+
+        if (cacheHit || response.status === "success") {
+          document.getElementById("sidebar-user-name").textContent = userData.profile.name || userData.username;
+          document.getElementById("sidebar-user-username").textContent = userData.username;
+          document.getElementById("sidebar-user-avatar").src = userData.profile.avatar || "/img/default-avatar.png";
+
+          document.getElementById("sidebar-user").classList.remove("hidden");
+        }
+      })();
+    }
+  });
+</script>

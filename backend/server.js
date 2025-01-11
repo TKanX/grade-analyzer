@@ -28,7 +28,7 @@ app.set('trust proxy', 1);
 db.connect();
 
 // Middleware setup
-app.use(bodyParser.json());
+app.use(bodyParser.json({ limit: '5mb' }));
 app.use(preprocessRequestDetailsMiddleware);
 app.use(responseMiddleware);
 app.use(authMiddleware);

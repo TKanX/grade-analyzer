@@ -257,6 +257,7 @@ const updatePassword = async (req, res) => {
   }
 
   // Check if current password is correct
+  const user = await userService.getUserById(id);
   const isMatch = await verifyPassword(currentPassword, user.password);
   if (!isMatch) {
     return res.unauthorized('Incorrect password.', 'INCORRECT_PASSWORD');

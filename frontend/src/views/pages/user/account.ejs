@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <%- include("../../components/head.ejs") %>
+  <script src="/js/user.js"></script>
+  <title>GradeAnalyzer | Account Settings</title>
+</head>
+
+<body>
+  <%- include("../../components/sidebar.ejs") %>
+
+  <main class="sm:ml-64 p-6">
+    <h1 class="text-2xl font-semibold mb-6">Account Settings</h1>
+
+    <div class="bg-background-50 shadow-md rounded-lg p-6">
+
+      <!-- Username Section -->
+      <div id="username-section" class="mb-6">
+        <label for="username" class="block text-sm font-medium text-text">Username</label>
+        <input type="text" id="username" class="mt-1 block w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500" />
+        <button id="update-username" class="mt-2 w-full bg-primary-500 text-white px-4 py-2 rounded hover:bg-primary-400 transition-colors duration-200">Modify</button>
+      </div>
+
+      <!-- Email Section -->
+      <div id="email-section" class="mb-6">
+        <label for="email" class="block text-sm font-medium text-text">Email</label>
+        <input type="email" id="email" class="mt-1 block w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500" />
+        <button id="send-verification" class="mt-2 w-full bg-primary-500 text-white px-4 py-2 rounded hover:bg-primary-400 transition-colors duration-200">Update Email</button>
+      </div>
+
+      <!-- Password Section -->
+      <div id="password-section" class="mb-6">
+        <label class="block text-sm font-medium text-text">Password</label>
+        <div class="mt-1 grid grid-cols-1 gap-4">
+          <input type="password" id="current-password" placeholder="Current Password" class="p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500" />
+          <input type="password" id="new-password" placeholder="New Password" class="p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500" />
+          <input type="password" id="confirm-password" placeholder="Confirm New Password" class="p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500" />
+        </div>
+        <button id="update-password" class="mt-4 bg-primary-500 text-white px-4 py-2 rounded hover:bg-primary-400 transition-colors duration-200">Update Password</button>
+        <p class="mt-2 text-sm text-gray-500">It may take up to 15 minutes to log out all devices.</p>
+      </div>
+
+    </div>
+  </main>
+
+  <script>
+    const user = new User(app);
+
+    // Fetch and display current user information
+    user.getUser().then((response) => {
+      if (response.status === "success") {
+        document.getElementById("username").value = response.data.username;
+        document.getElementById("email").value = response.data.email;
+      }
+    });
+
+    // Update username button event listener
+    const updateUsernameButton = document.getElementById("update-username");
+    updateUsernameButton.addEventListener("click", async () => {
+      updateUsernameButton.disabled = true;
+      const username = document.getElementById("username").value;
+      const response = await user.updateUsername(username);
+      if (response.status === "success") {
+        app.ui.notification(
+          "alert",
+          response.message,
+          "success",
+          document.getElementById("username-section"),
+          "username"
+        );
+      } else {
+        app.ui.notification(
+          "alert",
+          response.message,
+          "error",
+          document.getElementById("username-section"),
+          "username"
+        );
+      }
+      updateUsernameButton.disabled = false; // Re-enable button
+    });
+
+    // Send verification button event listener
+    const sendVerificationButton = document.getElementById("send-verification");
+    sendVerificationButton.addEventListener("click", async () => {
+      sendVerificationButton.disabled = true;
+      const email = document.getElementById("email").value;
+      const response = await user.updateEmail(email);
+      if (response.status === "success") {
+        app.ui.notification(
+          "alert",
+          response.message,
+          "success",
+          document.getElementById("email-section"),
+          "email"
+        );
+      } else {
+        app.ui.notification(
+          "alert",
+          response.message,
+          "error",
+          document.getElementById("email-section"),
+          "email"
+        );
+      }
+      sendVerificationButton.disabled = false; // Re-enable button
+    });
+
+    // Update password button event listener
+    const updatePasswordButton = document.getElementById("update-password");
+    updatePasswordButton.addEventListener("click", async () => {
+      updatePasswordButton.disabled = true;
+      const currentPassword = document.getElementById("current-password").value;
+      const newPassword = document.getElementById("new-password").value;
+      const confirmPassword = document.getElementById("confirm-password").value;
+      // Check if new passwords match
+      if (newPassword !== confirmPassword) {
+        app.ui.notification(
+          "alert",
+          "Passwords do not match",
+          "error",
+          document.getElementById("password-section"),
+          "password"
+        );
+        updatePasswordButton.disabled = false; // Re-enable button
+        return;
+      }
+      const response = await user.updatePassword(currentPassword, newPassword);
+      if (response.status === "success") {
+        app.ui.notification(
+          "alert",
+          response.message,
+          "success",
+          document.getElementById("password-section"),
+          "password"
+        );
+      } else {
+        // Handle specific error cases
+        if (response.error.code === "INVALID_PASSWORD") {
+          app.ui.notification(
+            "list",
+            [
+              "Password must be at least 8 characters long",
+              "Password must contain at least one uppercase letter",
+              "Password must contain at least one lowercase letter",
+              "Password must contain at least one number",
+              "Password must contain at least one special character",
+            ],
+            "error",
+            document.getElementById("password-section"),
+            "password"
+          );
+        } else {
+          app.ui.notification(
+            "alert",
+            response.message,
+            "error",
+            document.getElementById("password-section"),
+            "password"
+          );
+        }
+      }
+      updatePasswordButton.disabled = false; // Re-enable button
+    });
+  </script>
+</body>
+
+</html>
