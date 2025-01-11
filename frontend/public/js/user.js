@@ -107,7 +107,7 @@ class User {
    * @returns {Promise<Object>} - The response object.
    */
   async updateEmail(email) {
-    const callbackUrl = `${this.baseURL}/user/settings/complete-email-update`;
+    const callbackUrl = `${this.baseURL}/user/account/complete-email-update`;
 
     const response = await fetch(
       `${this.apiURL}/users/${this.app.auth.userId}/email`,
