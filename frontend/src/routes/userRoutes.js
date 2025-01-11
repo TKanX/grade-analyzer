@@ -35,4 +35,8 @@ router.get('/security', (req, res) => {
   res.render('pages/user/security');
 });
 
+router.get('/logout', (req, res) => {
+  res.render('pages/user/logout');
+});
+
 module.exports = router;
