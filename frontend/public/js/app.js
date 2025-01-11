@@ -66,6 +66,68 @@ class Data {
 }
 
 /**
+ * @class Cache
+ * @description Handles the cache of the application.
+ */
+class Cache {
+  /**
+   * @constructor - Initializes the Cache class.
+   * @param {Object} app - The App class instance.
+   */
+  constructor(app) {
+    this.app = app;
+    this.key = 'appCache';
+    this._data = this.loadCache();
+
+    return this.createProxy(this._data);
+  }
+
+  /**
+   * @method createProxy - Creates a proxy for the cache object.
+   * @param {Object} data - The cache object to proxy.
+   * @returns {Object} - The proxied cache object.
+   */
+  createProxy(data) {
+    const handler = {
+      set: (target, prop, value) => {
+        if (typeof value === 'object' && value !== null) {
+          value = this.createProxy(value);
+        }
+        target[prop] = value;
+        this.saveCache(); // Save cache when any property is set
+        return true;
+      },
+      get: (target, prop) => {
+        if (prop in target) {
+          if (typeof target[prop] === 'object' && target[prop] !== null) {
+            return this.createProxy(target[prop]);
+          }
+          return target[prop];
+        }
+        return undefined;
+      },
+    };
+
+    return new Proxy(data, handler);
+  }
+
+  /**
+   * @method loadCache - Loads cache from the session-storage.
+   */
+  loadCache() {
+    const storedCache = sessionStorage.getItem(this.key);
+    return storedCache ? JSON.parse(storedCache) : {};
+  }
+
+  /**
+   * @method saveCache - Saves cache to the session-storage.
+   */
+  saveCache() {
+    sessionStorage.setItem(this.key, JSON.stringify(this._data));
+  }
+}
+
+/**
  * @class Auth
  * @description Handles the authentication of the application.
  */
@@ -563,6 +625,7 @@ class App {
     this.apiURL = apiURL;
 
     this.data = new Data(this);
+    this.cache = new Cache(this);
     this.auth = new Auth(this);
     this.location = new Location(this);
     this.ui = new UI(this);
