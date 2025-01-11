@@ -18,4 +18,13 @@ router.get('/account', (req, res) => {
   return res.render('pages/user/account');
 });
 
+router.get('/account/complete-email-update', (req, res) => {
+  if (!req.query.token) {
+    return res.redirect('/user/account');
+  }
+  return res.render('pages/user/complete-email-update', {
+    token: req.query.token,
+  });
+});
+
 module.exports = router;
