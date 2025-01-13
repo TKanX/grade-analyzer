@@ -240,6 +240,12 @@ const gradeSchema = new mongoose.Schema({
 // Index the userId field
 gradeSchema.index({ userId: 1 });
 
+// Index the startDate field
+gradeSchema.index({ startDate: -1 });
+
+// Index the endDate field
+gradeSchema.index({ endDate: -1 });
+
 // Create the grade model
 const Grade = mongoose.model('Grade', gradeSchema);
 
