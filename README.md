@@ -7,7 +7,9 @@ GradeAnalyzer is a powerful and user-friendly tool designed to help students tra
 ## Features
 
 - **Multi-Level Data Input:** Supports input at different levels (task, category, subject), allowing flexibility for different user preferences.
+- **Customizable Grade Mode:** Customizable grading mode and grade ranges to fit different academic systems and course requirements. Discrete and continuous grading scales are supported.
 - **GPA Calculation (Weighted & Unweighted):** Automatically calculates GPA based on weighted or unweighted methods, taking into account advanced courses like AP and Honors.
+- **Grade Range Customization:** Users can define grade ranges dynamically, with support for different GPA scales such as honors and advanced courses.
 - **Performance Visualization:** Interactive charts and graphs (pie charts, bar charts, line graphs) to display performance across subjects, categories, and tasks.
 - **Goal Setting:** Set and track academic goals such as GPA targets, subject-specific goals, and category-specific targets.
 - **User-Friendly Interface:** Clean and intuitive design to ensure easy navigation and data input.
