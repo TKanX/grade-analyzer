@@ -5,8 +5,8 @@
 
 const mongoose = require('mongoose');
 
-// Define the test schema
-const testSchema = new mongoose.Schema(
+// Define the task schema
+const taskSchema = new mongoose.Schema(
   {
     name: {
       type: String,
@@ -40,7 +40,7 @@ const categorySchema = new mongoose.Schema(
       max: 1,
     },
     tasks: {
-      type: [testSchema],
+      type: [taskSchema],
       required: false,
     },
     percentage: {
