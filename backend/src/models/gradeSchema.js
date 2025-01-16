@@ -87,155 +87,160 @@ const courseSchema = new mongoose.Schema(
 );
 
 // Define the grade (semester/quarter) schema
-const gradeSchema = new mongoose.Schema({
-  userId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true,
-  },
-  name: {
-    type: String,
-    required: true,
-  },
-  startDate: {
-    type: Date,
-    required: true,
-  },
-  endDate: {
-    type: Date,
-    required: true,
-  },
-  courses: {
-    type: [courseSchema],
-    required: false,
-  },
-  gradingMode: {
-    type: String,
-    enum: ['continuous', 'discrete'], // continuous: percentage -> GPAs AND percentage -> letter, discrete: percentage -> letter -> GPAs
-    required: false,
-    default: 'discrete',
-  },
-  gradeRange: {
-    type: [
-      {
-        percentage: {
-          type: Number,
-          required: true,
-        }, // xx% or higher
-        letter: {
-          type: String,
-          required: true,
+const gradeSchema = new mongoose.Schema(
+  {
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: true,
+    },
+    name: {
+      type: String,
+      required: true,
+    },
+    startDate: {
+      type: Date,
+      required: true,
+    },
+    endDate: {
+      type: Date,
+      required: true,
+    },
+    courses: {
+      type: [courseSchema],
+      required: false,
+    },
+    gradingMode: {
+      type: String,
+      enum: ['continuous', 'discrete'], // continuous: percentage -> GPAs AND percentage -> letter, discrete: percentage -> letter -> GPAs
+      required: false,
+      default: 'discrete',
+    },
+    gradeRange: {
+      type: [
+        {
+          percentage: {
+            type: Number,
+            required: true,
+          }, // xx% or higher
+          letter: {
+            type: String,
+            required: true,
+          },
+          GPA: {
+            type: Number,
+            required: true,
+          },
+          honorsGPA: {
+            type: Number,
+            required: true,
+          },
+          advancedGPA: {
+            type: Number,
+            required: true,
+          },
         },
-        GPA: {
-          type: Number,
-          required: true,
+      ],
+      required: false,
+      default: [
+        {
+          percentage: 97,
+          letter: 'A+',
+          GPA: 4.0,
+          honorsGPA: 4.5,
+          advancedGPA: 5.0,
         },
-        honorsGPA: {
-          type: Number,
-          required: true,
+        {
+          percentage: 93,
+          letter: 'A',
+          GPA: 4.0,
+          honorsGPA: 4.5,
+          advancedGPA: 5.0,
         },
-        advancedGPA: {
-          type: Number,
-          required: true,
+        {
+          percentage: 90,
+          letter: 'A-',
+          GPA: 4.0,
+          honorsGPA: 4.5,
+          advancedGPA: 5.0,
         },
-      },
-    ],
-    required: false,
-    default: [
-      {
-        percentage: 97,
-        letter: 'A+',
-        GPA: 4.0,
-        honorsGPA: 4.5,
-        advancedGPA: 5.0,
-      },
-      {
-        percentage: 93,
-        letter: 'A',
-        GPA: 4.0,
-        honorsGPA: 4.5,
-        advancedGPA: 5.0,
-      },
-      {
-        percentage: 90,
-        letter: 'A-',
-        GPA: 4.0,
-        honorsGPA: 4.5,
-        advancedGPA: 5.0,
-      },
-      {
-        percentage: 87,
-        letter: 'B+',
-        GPA: 3.0,
-        honorsGPA: 3.5,
-        advancedGPA: 4.0,
-      },
-      {
-        percentage: 83,
-        letter: 'B',
-        GPA: 3.0,
-        honorsGPA: 3.5,
-        advancedGPA: 4.0,
-      },
-      {
-        percentage: 80,
-        letter: 'B-',
-        GPA: 3.0,
-        honorsGPA: 3.5,
-        advancedGPA: 4.0,
-      },
-      {
-        percentage: 77,
-        letter: 'C+',
-        GPA: 2.0,
-        honorsGPA: 2.5,
-        advancedGPA: 3.0,
-      },
-      {
-        percentage: 73,
-        letter: 'C',
-        GPA: 2.0,
-        honorsGPA: 2.5,
-        advancedGPA: 3.0,
-      },
-      {
-        percentage: 70,
-        letter: 'C-',
-        GPA: 2.0,
-        honorsGPA: 2.5,
-        advancedGPA: 3.0,
-      },
-      {
-        percentage: 67,
-        letter: 'D+',
-        GPA: 1.0,
-        honorsGPA: 1.5,
-        advancedGPA: 2.0,
-      },
-      {
-        percentage: 63,
-        letter: 'D',
-        GPA: 1.0,
-        honorsGPA: 1.5,
-        advancedGPA: 2.0,
-      },
-      {
-        percentage: 60,
-        letter: 'D-',
-        GPA: 1.0,
-        honorsGPA: 1.5,
-        advancedGPA: 2.0,
-      },
-      {
-        percentage: 0,
-        letter: 'F',
-        GPA: 0.0,
-        honorsGPA: 0.0,
-        advancedGPA: 0.0,
-      },
-    ],
+        {
+          percentage: 87,
+          letter: 'B+',
+          GPA: 3.0,
+          honorsGPA: 3.5,
+          advancedGPA: 4.0,
+        },
+        {
+          percentage: 83,
+          letter: 'B',
+          GPA: 3.0,
+          honorsGPA: 3.5,
+          advancedGPA: 4.0,
+        },
+        {
+          percentage: 80,
+          letter: 'B-',
+          GPA: 3.0,
+          honorsGPA: 3.5,
+          advancedGPA: 4.0,
+        },
+        {
+          percentage: 77,
+          letter: 'C+',
+          GPA: 2.0,
+          honorsGPA: 2.5,
+          advancedGPA: 3.0,
+        },
+        {
+          percentage: 73,
+          letter: 'C',
+          GPA: 2.0,
+          honorsGPA: 2.5,
+          advancedGPA: 3.0,
+        },
+        {
+          percentage: 70,
+          letter: 'C-',
+          GPA: 2.0,
+          honorsGPA: 2.5,
+          advancedGPA: 3.0,
+        },
+        {
+          percentage: 67,
+          letter: 'D+',
+          GPA: 1.0,
+          honorsGPA: 1.5,
+          advancedGPA: 2.0,
+        },
+        {
+          percentage: 63,
+          letter: 'D',
+          GPA: 1.0,
+          honorsGPA: 1.5,
+          advancedGPA: 2.0,
+        },
+        {
+          percentage: 60,
+          letter: 'D-',
+          GPA: 1.0,
+          honorsGPA: 1.5,
+          advancedGPA: 2.0,
+        },
+        {
+          percentage: 0,
+          letter: 'F',
+          GPA: 0.0,
+          honorsGPA: 0.0,
+          advancedGPA: 0.0,
+        },
+      ],
+    },
   },
-});
+  {
+    timestamps: true,
+  },
+);
 
 // Index the userId field
 gradeSchema.index({ userId: 1 });
