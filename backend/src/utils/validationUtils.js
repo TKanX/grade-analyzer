@@ -253,6 +253,36 @@ const validateGradeName = (name) => {
   }
 };
 
+/**
+ * @function validateStartDate - Validate a start date.
+ * @param {string} startDate - The start date to validate.
+ * @returns {boolean} - True if the start date is valid, false otherwise.
+ */
+const validateStartDate = (startDate) => {
+  if (!startDate) {
+    // Check if the start date is empty
+    return false;
+  } else {
+    // Check if the start date is a valid date
+    return !isNaN(Date.parse(startDate));
+  }
+};
+
+/**
+ * @function validateEndDate - Validate an end date.
+ * @param {string} endDate - The end date to validate.
+ * @returns {boolean} - True if the end date is valid, false otherwise.
+ */
+const validateEndDate = (endDate) => {
+  if (!endDate) {
+    // Check if the end date is empty
+    return false;
+  } else {
+    // Check if the end date is a valid date
+    return !isNaN(Date.parse(endDate));
+  }
+};
+
 module.exports = {
   validateEmail,
   validatePassword,
@@ -269,4 +299,6 @@ module.exports = {
   validateDateFormat,
   validateTheme,
   validateGradeName,
+  validateStartDate,
+  validateEndDate,
 };
