@@ -56,6 +56,8 @@ If the rate limit is exceeded, the server will respond with a `429 Too Many Requ
       - [Update Password](#update-password)
       - [Update Profile](#update-profile)
       - [Update Settings](#update-settings)
+    - [Grade Endpoints](#grade-endpoints)
+      - [Get Grades](#get-grades)
 
 ### Authentication Endpoints
 
@@ -1382,3 +1384,43 @@ If the rate limit is exceeded, the server will respond with a `429 Too Many Requ
     ```
 
 > **Note:** The endpoint is protected, and the user must be authenticated to access it. The user can only update their own settings.
+
+### Grade Endpoints
+
+#### Get Grades
+
+- **URL:** `/api/grades`
+- **Method:** `GET`
+
+- **Query Parameters**:
+
+  - `detailed`: Whether to return detailed grade information (default: false).
+
+- **Response**:
+
+  - **Status:** `200 OK`
+
+    ```json
+    {
+      "status": "success",
+      "data": [],
+      "message": "Grades retrieved successfully."
+    }
+    ```
+
+  > **Note:** The grades will be returned in the response (`data` field).
+
+  - **Status:** `500 Internal Server Error`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Error getting grades.",
+      "error": {
+        "code": "GET_GRADES_ERROR",
+        "details": {}
+      }
+    }
+    ```
+
+> **Note:** The endpoint is protected, and the user must be authenticated to access it. The user can only get grades for their own account.
