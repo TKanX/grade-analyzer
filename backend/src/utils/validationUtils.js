@@ -17,6 +17,7 @@ const COUNTRY_REGEX = /^[a-zA-Z]{2}$/; // Check if the country code is valid (2 
 const TIME_FORMAT_REGEX = /^(12h|24h)$/; // Check if the time format is valid (12h or 24h)
 const DATE_FORMAT_REGEX = /^(MM-DD-YYYY|DD-MM-YYYY|YYYY-MM-DD)$/; // Check if the date format is valid (MM-DD-YYYY, DD-MM-YYYY, or YYYY-MM-DD)
 const THEME_REGEX = /^(light|dark|system)$/; // Check if the theme is valid (light, dark, or system)
+const GRADE_NAME_REGEX = /^(?!.*\s{2,})[^\s](.{0,18}[^\s])?$|^$/; // Check if the grade name is valid (at least 3 characters, no leading or trailing spaces, no consecutive spaces)
 
 /**
  * @function validateEmail - Validate an email address.
@@ -229,6 +230,21 @@ const validateTheme = (theme) => {
   }
 };
 
+/**
+ * @function validateGradeName - Validate a grade name.
+ * @param {string} name - The grade name to validate.
+ * @returns {boolean} - True if the grade name is valid, false otherwise.
+ */
+const validateGradeName = (name) => {
+  if (!name) {
+    // Check if the grade name is empty
+    return false;
+  } else {
+    // Check if the grade name matches the regex pattern
+    return GRADE_NAME_REGEX.test(name);
+  }
+};
+
 module.exports = {
   validateEmail,
   validatePassword,
@@ -244,4 +260,5 @@ module.exports = {
   validateTimeFormat,
   validateDateFormat,
   validateTheme,
+  validateGradeName,
 };
