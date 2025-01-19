@@ -4,8 +4,10 @@
  */
 
 const MAX_EMAIL_LENGTH = 254; // The maximum length of an email address
+const MAX_USERNAME_LENGTH = 20; // The maximum length of a username
 const MAX_LIMIT = 100; // The maximum limit value
 const MAX_AVATAR_SIZE = 5242880; // 5MB in bytes (5 * 1024 * 1024)
+const MAX_SCHOOL_LENGTH = 50; // The maximum length of a school name
 
 const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/; // Check if the email is valid (contains an @ symbol and a period)
 const PASSWORD_REGEX = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\W_])[^\s]{8,}$/; // Check if the password is valid (at least 8 characters, one uppercase letter, one lowercase letter, one number, and one special character)
@@ -17,7 +19,7 @@ const COUNTRY_REGEX = /^[a-zA-Z]{2}$/; // Check if the country code is valid (2 
 const TIME_FORMAT_REGEX = /^(12h|24h)$/; // Check if the time format is valid (12h or 24h)
 const DATE_FORMAT_REGEX = /^(MM-DD-YYYY|DD-MM-YYYY|YYYY-MM-DD)$/; // Check if the date format is valid (MM-DD-YYYY, DD-MM-YYYY, or YYYY-MM-DD)
 const THEME_REGEX = /^(light|dark|system)$/; // Check if the theme is valid (light, dark, or system)
-const GRADE_NAME_REGEX = /^(?!.*\s{2,})[^\s](.{0,18}[^\s])?$|^$/; // Check if the grade name is valid (at least 3 characters, no leading or trailing spaces, no consecutive spaces)
+const GRADE_NAME_REGEX = /^(?!.*\s{2,})[^\s](.{0,18}[^\s])?$|^$/; // Check if the grade name is valid (at least 3 characters, no more than 20 characters, no leading or trailing spaces, no consecutive spaces)
 
 /**
  * @function validateEmail - Validate an email address.
@@ -60,6 +62,9 @@ const validatePassword = (password) => {
 const validateUsername = (username) => {
   if (!username) {
     // Check if the username is empty
+    return false;
+  } else if (username.length > MAX_USERNAME_LENGTH) {
+    // Check if the username is too long
     return false;
   } else {
     // Check if the username matches the regex pattern
@@ -161,6 +166,9 @@ const validateSchool = (school) => {
   } else if (school === '') {
     // Check if the school name is empty (an empty string)
     return true;
+  } else if (school.length > MAX_SCHOOL_LENGTH) {
+    // Check if the school name is too long
+    return false;
   } else {
     // Check if the school name matches the regex pattern
     return SCHOOL_REGEX.test(school);
