@@ -152,10 +152,7 @@ const updateGrade = async (req, res) => {
 
     // Check if user is not the same as the requested user
     if (existingGrade.userId.toString() !== userId) {
-      return res.forbidden(
-        'Forbidden to update this grade.',
-        'ACCESS_DENIED',
-      );
+      return res.forbidden('Forbidden to update this grade.', 'ACCESS_DENIED');
     }
 
     // If permission check passes, proceed with update
@@ -198,10 +195,7 @@ const updateGradeFields = async (req, res) => {
 
     // Check if user is not the same as the requested user
     if (existingGrade.userId.toString() !== userId) {
-      return res.forbidden(
-        'Forbidden to update this grade.',
-        'ACCESS_DENIED',
-      );
+      return res.forbidden('Forbidden to update this grade.', 'ACCESS_DENIED');
     }
 
     const updatedGrade = existingGrade.toJSON();
@@ -217,7 +211,7 @@ const updateGradeFields = async (req, res) => {
         );
       }
 
-      const keys = path.splice(1).split('/'); // Convert '/key1/key2' to ['key1', 'key2']
+      const keys = path.slice(1).split('/'); // Convert '/key1/key2' to ['key1', 'key2']
       let target = updatedGrade;
 
       // Navigate to the target object or array
