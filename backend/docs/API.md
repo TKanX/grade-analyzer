@@ -61,6 +61,7 @@ If the rate limit is exceeded, the server will respond with a `429 Too Many Requ
       - [Get Grades](#get-grades)
       - [Get Grade](#get-grade)
       - [Update Grade](#update-grade)
+      - [Update Grade (Partial (JSON Patch))](#update-grade-partial-json-patch)
 
 ### Authentication Endpoints
 
@@ -1688,6 +1689,156 @@ If the rate limit is exceeded, the server will respond with a `429 Too Many Requ
       "message": "Error updating grade.",
       "error": {
         "code": "UPDATE_GRADE_ERROR",
+        "details": {}
+      }
+    }
+    ```
+
+> **Note:** The endpoint is protected, and the user must be authenticated to access it. The user can only update their own grade.
+
+#### Update Grade (Partial (JSON Patch))
+
+- **URL:** `/api/grades/:id`
+- **Method:** `PATCH` **(JSON Patch - RFC 6902)**
+
+- **Request Parameters**:
+
+  - `id`: The ID of the grade to update.
+
+- **Request Body**:
+
+  ```json
+  []
+  ```
+
+  > **Note:** The JSON Patch object to update the grade. `/id`, `__v`, `userId`, `createdAt`, and `updatedAt` fields cannot be updated. (Details of the JSON Patch object can be found in the `src/models/gradeSchema.js` file.)
+
+- **Response**:
+
+  - **Status:** `200 OK`
+
+    ```json
+    {
+      "status": "success",
+      "data": {},
+      "message": "Grade updated successfully."
+    }
+    ```
+
+    > **Note:** The updated grade data will be returned in the response (`data` field). The response data will not be detailed.
+
+  - **Status:** `400 Bad Request`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Invalid path: <path>.",
+      "error": {
+        "code": "INVALID_PATH",
+        "details": {}
+      }
+    }
+    ```
+
+  - **Status:** `400 Bad Request`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Missing 'from' in copy operation.",
+      "error": {
+        "code": "INVALID_OPERATION",
+        "details": {}
+      }
+    }
+    ```
+
+  - **Status:** `400 Bad Request`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Invalid from path: <path>.",
+      "error": {
+        "code": "INVALID_FROM_PATH",
+        "details": {}
+      }
+    }
+    ```
+
+  - **Status:** `400 Bad Request`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Missing 'from' in move operation.",
+      "error": {
+        "code": "INVALID_OPERATION",
+        "details": {}
+      }
+    }
+    ```
+
+  - **Status:** `400 Bad Request`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Test operation failed at path: <path>.",
+      "error": {
+        "code": "TEST_FAILED",
+        "details": {}
+      }
+    }
+    ```
+
+  - **Status:** `400 Bad Request`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Unsupported operation: <operation>.",
+      "error": {
+        "code": "INVALID_OPERATION",
+        "details": {}
+      }
+    }
+    ```
+
+  - **Status:** `404 Not Found`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Grade not found.",
+      "error": {
+        "code": "GRADE_NOT_FOUND",
+        "details": {}
+      }
+    }
+    ```
+
+  - **Status:** `403 Forbidden`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Forbidden to update this grade.",
+      "error": {
+        "code": "ACCESS_DENIED",
+        "details": {}
+      }
+    }
+    ```
+
+  - **Status:** `500 Internal Server Error`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Error updating grade fields.",
+      "error": {
+        "code": "UPDATE_GRADE_FIELDS_ERROR",
         "details": {}
       }
     }

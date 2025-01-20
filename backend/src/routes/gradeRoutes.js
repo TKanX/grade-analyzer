@@ -18,5 +18,6 @@ router.get('/', gradeControllers.getGrades);
 router.get('/:id', gradeControllers.getGrade);
 
 router.put('/:id', gradeControllers.updateGrade);
+router.patch('/:id', gradeControllers.updateGradeFields); // JSON Patch
 
 module.exports = router;

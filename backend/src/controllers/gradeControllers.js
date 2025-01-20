@@ -153,7 +153,7 @@ const updateGrade = async (req, res) => {
     // Check if user is not the same as the requested user
     if (existingGrade.userId.toString() !== userId) {
       return res.forbidden(
-        'Forbidden to update grade for this user.',
+        'Forbidden to update this grade.',
         'ACCESS_DENIED',
       );
     }
@@ -170,9 +170,193 @@ const updateGrade = async (req, res) => {
   }
 };
 
+/**
+ * @function updateGradeFields - Update specific fields of a grade (semester/quarter) by ID. (JSON Patch)
+ * @param {Request} req - The request object.
+ * @param {Response} res - The response object.
+ */
+const updateGradeFields = async (req, res) => {
+  const { userId } = req.user;
+  const { id } = req.params;
+  const patch = req.body;
+
+  const disallowedFields = [
+    '/_id',
+    '/__v',
+    '/userId',
+    '/createdAt',
+    '/updatedAt',
+  ];
+
+  // Update the grade fields
+  try {
+    // First check if grade exists and belongs to user
+    const existingGrade = await gradeService.getGradeById(id);
+    if (!existingGrade) {
+      return res.notFound('Grade not found.', 'GRADE_NOT_FOUND');
+    }
+
+    // Check if user is not the same as the requested user
+    if (existingGrade.userId.toString() !== userId) {
+      return res.forbidden(
+        'Forbidden to update this grade.',
+        'ACCESS_DENIED',
+      );
+    }
+
+    const updatedGrade = existingGrade.toJSON();
+
+    // If permission check passes, proceed with update
+    for (const operation of patch) {
+      const { op, from, path, value } = operation;
+
+      if (disallowedFields.includes(path)) {
+        return res.forbidden(
+          'Forbidden to update some fields.',
+          'ACCESS_DENIED',
+        );
+      }
+
+      const keys = path.splice(1).split('/'); // Convert '/key1/key2' to ['key1', 'key2']
+      let target = updatedGrade;
+
+      // Navigate to the target object or array
+      for (let i = 0; i < keys.length - 1; i++) {
+        if (!(keys[i] in target)) {
+          if (op === 'add') {
+            target[keys[i]] = isNaN(keys[i + 1]) ? {} : [];
+          } else {
+            return res.badRequest(`Invalid path: ${path}`, 'INVALID_PATH');
+          }
+        }
+        target = target[keys[i]];
+      }
+
+      const lastKey = keys[keys.length - 1];
+
+      // Perform the operation
+      switch (op) {
+        case 'add':
+          if (Array.isArray(target)) {
+            target.splice(parseInt(lastKey, 10), 0, value);
+          } else {
+            target[lastKey] = value;
+          }
+          break;
+
+        case 'replace':
+          target[lastKey] = value;
+          break;
+
+        case 'remove':
+          if (Array.isArray(target)) {
+            target.splice(parseInt(lastKey, 10), 1);
+          } else {
+            delete target[lastKey];
+          }
+          break;
+
+        case 'copy':
+          if (!from) {
+            return res.badRequest(
+              'Missing "from" in copy operation.',
+              'INVALID_OPERATION',
+            );
+          }
+          const fromKeys = from.slice(1).split('/');
+          let fromTarget = updatedGrade;
+
+          for (const key of fromKeys) {
+            if (!(key in fromTarget)) {
+              return res.badRequest(
+                `Invalid from path: ${from}`,
+                'INVALID_FROM_PATH',
+              );
+            }
+            fromTarget = fromTarget[key];
+          }
+
+          target[lastKey] = JSON.parse(JSON.stringify(fromTarget));
+          break;
+
+        case 'move':
+          if (!from) {
+            return res.badRequest(
+              'Missing "from" in move operation.',
+              'INVALID_OPERATION',
+            );
+          }
+          const fromKeysMove = from.slice(1).split('/');
+          let fromTargetMove = updatedGrade;
+
+          for (let i = 0; i < fromKeysMove.length - 1; i++) {
+            if (!(fromKeysMove[i] in fromTargetMove)) {
+              return res.badRequest(
+                `Invalid from path: ${from}`,
+                'INVALID_PATH',
+              );
+            }
+            fromTargetMove = fromTargetMove[fromKeysMove[i]];
+          }
+
+          const fromLastKey = fromKeysMove[fromKeysMove.length - 1];
+          const movedValue = fromTargetMove[fromLastKey];
+
+          if (Array.isArray(fromTargetMove)) {
+            fromTargetMove.splice(parseInt(fromLastKey, 10), 1);
+          } else {
+            delete fromTargetMove[fromLastKey];
+          }
+
+          if (Array.isArray(target)) {
+            target.splice(parseInt(lastKey, 10), 0, movedValue);
+          } else {
+            target[lastKey] = movedValue;
+          }
+          break;
+
+        case 'test':
+          if (JSON.stringify(target[lastKey]) !== JSON.stringify(value)) {
+            return res.badRequest(
+              `Test operation failed at path: ${path}`,
+              'TEST_FAILED',
+            );
+          }
+          break;
+
+        default:
+          return res.badRequest(
+            `Unsupported operation: ${op}`,
+            'INVALID_OPERATION',
+          );
+      }
+    }
+
+    // Update the grade
+    let result = await gradeService.updateGradeById(id, updatedGrade);
+    result = {
+      _id: result._id,
+      userId: result.userId,
+      name: result.name,
+      startDate: result.startDate,
+      endDate: result.endDate,
+      createdAt: result.createdAt,
+      updatedAt: result.updatedAt,
+    };
+    return res.success(result, 'Grade updated successfully.');
+  } catch (error) {
+    console.error('Error updating grade fields: ', error);
+    return res.internalServerError(
+      'Error updating grade fields.',
+      'UPDATE_GRADE_FIELDS_ERROR',
+    );
+  }
+};
+
 module.exports = {
   createGrade,
   getGrades,
   getGrade,
   updateGrade,
+  updateGradeFields,
 };
