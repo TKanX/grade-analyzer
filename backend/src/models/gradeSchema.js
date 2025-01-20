@@ -20,6 +20,11 @@ const taskSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
+    extraCredit: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   {
     _id: false,
