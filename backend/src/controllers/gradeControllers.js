@@ -5,8 +5,58 @@
 
 const gradeService = require('../services/gradeService');
 
+const validationUtils = require('../utils/validationUtils');
+
+const DEFAULT_GRADE_END_DATE_MONTHS = 3;
+
 /**
- * @function getGrades - Get all grades for a user.
+ * @function createGrade - Create a new grade (semester/quarter).
+ * @param {Request} req - The request object.
+ * @param {Response} res - The response object.
+ */
+const createGrade = async (req, res) => {
+  const { userId } = req.user;
+  const grade = {
+    userId,
+    name: req.body.name,
+    startDate: req.body.startDate || new Date(),
+    endDate:
+      req.body.endDate ||
+      new Date().setMonth(
+        new Date().getMonth() + DEFAULT_GRADE_END_DATE_MONTHS,
+      ),
+  };
+
+  // Check if the grade name is valid
+  if (!validationUtils.validateGradeName(grade.name)) {
+    return res.badRequest('Invalid grade name.', 'INVALID_GRADE_NAME');
+  }
+
+  // Check if the grade start date is valid
+  if (!validationUtils.validateStartDate(grade.startDate)) {
+    return res.badRequest('Invalid start date.', 'INVALID_START_DATE');
+  }
+
+  // Check if the grade end date is valid
+  if (!validationUtils.validateEndDate(grade.endDate)) {
+    return res.badRequest('Invalid end date.', 'INVALID_END_DATE');
+  }
+
+  // Create the grade
+  try {
+    const newGrade = await gradeService.createGrade(grade);
+    return res.success(newGrade, 'Grade created successfully.');
+  } catch (error) {
+    console.error('Error creating grade: ', error);
+    return res.internalServerError(
+      'Error creating grade.',
+      'CREATE_GRADE_ERROR',
+    );
+  }
+};
+
+/**
+ * @function getGrades - Get all grades (semesters/quarters) for a user.
  * @param {Request} req - The request object.
  * @param {Response} res - The response object.
  */
@@ -31,5 +81,6 @@ const getGrades = async (req, res) => {
 };
 
 module.exports = {
+  createGrade,
   getGrades,
 };

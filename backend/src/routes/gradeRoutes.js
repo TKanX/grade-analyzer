@@ -12,6 +12,8 @@ const gradeControllers = require('../controllers/gradeControllers');
 
 router.use(rateLimiter());
 
+router.post('/', gradeControllers.createGrade);
+
 router.get('/', gradeControllers.getGrades);
 
 module.exports = router;

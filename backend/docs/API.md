@@ -57,6 +57,7 @@ If the rate limit is exceeded, the server will respond with a `429 Too Many Requ
       - [Update Profile](#update-profile)
       - [Update Settings](#update-settings)
     - [Grade Endpoints](#grade-endpoints)
+      - [Create Grade](#create-grade)
       - [Get Grades](#get-grades)
 
 ### Authentication Endpoints
@@ -1386,6 +1387,91 @@ If the rate limit is exceeded, the server will respond with a `429 Too Many Requ
 > **Note:** The endpoint is protected, and the user must be authenticated to access it. The user can only update their own settings.
 
 ### Grade Endpoints
+
+#### Create Grade
+
+- **URL:** `/api/grades`
+- **Method:** `POST`
+
+- **Request Body**:
+
+  ```json
+  {
+    "name": "grade_name",
+    "startDate": "start_date",
+    "endDate": "end_date"
+  }
+  ```
+
+  > **Note:** The grade name, start date, and end date to create. The `name` is a string, `startDate` and `endDate` is a date string (e.g., "2000-01-01") (optional).
+
+- **Response**:
+
+  - **Status:** `200 OK`
+
+    ```json
+    {
+      "status": "success",
+      "data": {},
+      "message": "Grade created successfully."
+    }
+    ```
+
+    > **Note:** The created grade data will be returned in the response (`data` field).
+
+  - **Status:** `400 Bad Request`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Invalid grade name.",
+      "error": {
+        "code": "INVALID_GRADE_NAME",
+        "details": {}
+      }
+    }
+    ```
+
+  - **Status:** `400 Bad Request`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Invalid start date.",
+      "error": {
+        "code": "INVALID_START_DATE",
+        "details": {}
+      }
+    }
+    ```
+
+  - **Status:** `400 Bad Request`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Invalid end date.",
+      "error": {
+        "code": "INVALID_END_DATE",
+        "details": {}
+      }
+    }
+    ```
+
+  - **Status:** `500 Internal Server Error`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Error creating grade.",
+      "error": {
+        "code": "CREATE_GRADE_ERROR",
+        "details": {}
+      }
+    }
+    ```
+
+> **Note:** The endpoint is protected, and the user must be authenticated to access it.
 
 #### Get Grades
 
