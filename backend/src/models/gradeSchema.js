@@ -139,6 +139,7 @@ const gradeSchema = new mongoose.Schema(
             type: Number,
             required: true,
           },
+          _id: false,
         },
       ],
       required: false,
