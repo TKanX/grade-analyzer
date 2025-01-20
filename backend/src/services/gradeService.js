@@ -100,33 +100,6 @@ const updateGradeById = async (gradeId, grade) => {
 };
 
 /**
- * @function updateGradeFieldById - Update a specific field of a grade by ID. (nested)
- * @param {string} gradeId - The grade ID to update.
- * @param {string} field - The field (key) to update.
- * @param {string} value - The value to update.
- * @returns {Promise<Object>} - The updated grade object.
- * @throws {Error} - Throws an error if the grade fails to update.
- */
-const updateGradeFieldById = async (gradeId, field, value) => {
-  if (!mongoose.Types.ObjectId.isValid(gradeId)) return null;
-
-  try {
-    const updatedGrade = await Grade.findByIdAndUpdate(
-      gradeId,
-      { [field]: value },
-      { new: true },
-    );
-    if (!updatedGrade) {
-      throw new Error('Grade not found.');
-    }
-    return updatedGrade;
-  } catch (error) {
-    console.error('Error in updating grade field by ID: ', error);
-    throw error;
-  }
-};
-
-/**
  * @function deleteGradeById - Delete a grade by ID.
  * @param {string} gradeId - The grade ID to delete.
  * @returns {Promise<Object>} - The deleted grade object.
@@ -153,6 +126,5 @@ module.exports = {
   getDetailedGrades,
   getGradeById,
   updateGradeById,
-  updateGradeFieldById,
   deleteGradeById,
 };
