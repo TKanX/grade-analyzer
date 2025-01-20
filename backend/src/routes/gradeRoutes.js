@@ -17,4 +17,6 @@ router.post('/', gradeControllers.createGrade);
 router.get('/', gradeControllers.getGrades);
 router.get('/:id', gradeControllers.getGrade);
 
+router.put('/:id', gradeControllers.updateGrade);
+
 module.exports = router;

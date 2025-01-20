@@ -60,6 +60,7 @@ If the rate limit is exceeded, the server will respond with a `429 Too Many Requ
       - [Create Grade](#create-grade)
       - [Get Grades](#get-grades)
       - [Get Grade](#get-grade)
+      - [Update Grade](#update-grade)
 
 ### Authentication Endpoints
 
@@ -1573,3 +1574,123 @@ If the rate limit is exceeded, the server will respond with a `429 Too Many Requ
       }
     }
     ```
+
+> **Note:** The endpoint is protected, and the user must be authenticated to access it. The user can only get grades for their own account.
+
+#### Update Grade
+
+- **URL:** `/api/grades/:id`
+- **Method:** `PUT`
+
+- **Request Parameters**:
+
+  - `id`: The ID of the grade to update.
+
+- **Request Body**:
+
+  ```json
+  {
+    "name": "new_grade_name",
+    "startDate": "new_start_date",
+    "endDate": "new_end_date",
+    "courses": [],
+    "gradingMode": "new_grading_mode",
+    "gradingRange": []
+  }
+  ```
+
+  > **Note:** The new grade information to update. Fields are optional. `name` is a string, `startDate` and `endDate` is a date string (e.g., "2000-01-01"), `courses` is the course objects, `gradingMode` is a string ("continuous" or "discrete"), and `gradingRange` is the grading range objects. (Details of the course and grading range objects can be found in the `src/models/gradeSchema.js` file.)
+
+- **Response**:
+
+  - **Status:** `200 OK`
+
+    ```json
+    {
+      "status": "success",
+      "data": {},
+      "message": "Grade updated successfully."
+    }
+    ```
+
+    > **Note:** The updated grade data will be returned in the response (`data` field).
+
+  - **Status:** `400 Bad Request`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Invalid grade name.",
+      "error": {
+        "code": "INVALID_GRADE_NAME",
+        "details": {}
+      }
+    }
+    ```
+
+  - **Status:** `400 Bad Request`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Invalid start date.",
+      "error": {
+        "code": "INVALID_START_DATE",
+        "details": {}
+      }
+    }
+    ```
+
+  - **Status:** `400 Bad Request`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Invalid end date.",
+      "error": {
+        "code": "INVALID_END_DATE",
+        "details": {}
+      }
+    }
+    ```
+
+  - **Status:** `404 Not Found`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Grade not found.",
+      "error": {
+        "code": "GRADE_NOT_FOUND",
+        "details": {}
+      }
+    }
+    ```
+
+  - **Status:** `403 Forbidden`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Forbidden to update this grade.",
+      "error": {
+        "code": "ACCESS_DENIED",
+        "details": {}
+      }
+    }
+    ```
+
+  - **Status:** `500 Internal Server Error`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Error updating grade.",
+      "error": {
+        "code": "UPDATE_GRADE_ERROR",
+        "details": {}
+      }
+    }
+    ```
+
+> **Note:** The endpoint is protected, and the user must be authenticated to access it. The user can only update their own grade.

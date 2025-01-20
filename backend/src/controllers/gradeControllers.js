@@ -110,8 +110,69 @@ const getGrade = async (req, res) => {
   }
 };
 
+/**
+ * @function updateGrade - Update a grade (semester/quarter) by ID.
+ * @param {Request} req - The request object.
+ * @param {Response} res - The response object.
+ */
+const updateGrade = async (req, res) => {
+  const { userId } = req.user;
+  const { id } = req.params;
+  const grade = {
+    name: req.body.name,
+    startDate: req.body.startDate,
+    endDate: req.body.endDate,
+    courses: req.body.courses,
+    gradingMode: req.body.gradingMode,
+    gradeRange: req.body.gradeRange,
+  };
+
+  // Check if the grade name is valid
+  if (!validationUtils.validateGradeName(grade.name)) {
+    return res.badRequest('Invalid grade name.', 'INVALID_GRADE_NAME');
+  }
+
+  // Check if the grade start date is valid
+  if (!validationUtils.validateStartDate(grade.startDate)) {
+    return res.badRequest('Invalid start date.', 'INVALID_START_DATE');
+  }
+
+  // Check if the grade end date is valid
+  if (!validationUtils.validateEndDate(grade.endDate)) {
+    return res.badRequest('Invalid end date.', 'INVALID_END_DATE');
+  }
+
+  // Update the grade
+  try {
+    // First check if grade exists and belongs to user
+    const existingGrade = await gradeService.getGradeById(id);
+    if (!existingGrade) {
+      return res.notFound('Grade not found.', 'GRADE_NOT_FOUND');
+    }
+
+    // Check if user is not the same as the requested user
+    if (existingGrade.userId.toString() !== userId) {
+      return res.forbidden(
+        'Forbidden to update grade for this user.',
+        'ACCESS_DENIED',
+      );
+    }
+
+    // If permission check passes, proceed with update
+    const updatedGrade = await gradeService.updateGradeById(id, grade);
+    return res.success(updatedGrade, 'Grade updated successfully.');
+  } catch (error) {
+    console.error('Error updating grade: ', error);
+    return res.internalServerError(
+      'Error updating grade.',
+      'UPDATE_GRADE_ERROR',
+    );
+  }
+};
+
 module.exports = {
   createGrade,
   getGrades,
   getGrade,
+  updateGrade,
 };
