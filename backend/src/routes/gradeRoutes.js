@@ -15,5 +15,6 @@ router.use(rateLimiter());
 router.post('/', gradeControllers.createGrade);
 
 router.get('/', gradeControllers.getGrades);
+router.get('/:id', gradeControllers.getGrade);
 
 module.exports = router;

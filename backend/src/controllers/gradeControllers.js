@@ -80,7 +80,38 @@ const getGrades = async (req, res) => {
   }
 };
 
+/**
+ * @function getGrade - Get a grade (semester/quarter) by ID.
+ * @param {Request} req - The request object.
+ * @param {Response} res - The response object.
+ */
+const getGrade = async (req, res) => {
+  const { userId } = req.user;
+  const { id } = req.params;
+
+  try {
+    const grade = await gradeService.getGradeById(id);
+    if (!grade) {
+      return res.notFound('Grade not found.', 'GRADE_NOT_FOUND');
+    }
+
+    // Check if user is not the same as the requested user
+    if (grade.userId.toString() !== userId) {
+      return res.forbidden(
+        'Forbidden to get grade for this user.',
+        'ACCESS_DENIED',
+      );
+    }
+
+    return res.success(grade, 'Grade retrieved successfully.');
+  } catch (error) {
+    console.error('Error getting grade: ', error);
+    return res.internalServerError('Error getting grade.', 'GET_GRADE_ERROR');
+  }
+};
+
 module.exports = {
   createGrade,
   getGrades,
+  getGrade,
 };

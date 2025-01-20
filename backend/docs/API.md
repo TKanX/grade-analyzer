@@ -59,6 +59,7 @@ If the rate limit is exceeded, the server will respond with a `429 Too Many Requ
     - [Grade Endpoints](#grade-endpoints)
       - [Create Grade](#create-grade)
       - [Get Grades](#get-grades)
+      - [Get Grade](#get-grade)
 
 ### Authentication Endpoints
 
@@ -619,7 +620,7 @@ If the rate limit is exceeded, the server will respond with a `429 Too Many Requ
     }
     ```
 
-  > **Note:** The user data will be returned in the response (`data` field).
+    > **Note:** The user data will be returned in the response (`data` field).
 
   - **Status:** `404 Not Found`
 
@@ -670,7 +671,7 @@ If the rate limit is exceeded, the server will respond with a `429 Too Many Requ
     }
     ```
 
-  > **Note:** The settings will be returned in the response (`data` field).
+    > **Note:** The settings will be returned in the response (`data` field).
 
   - **Status:** `403 Forbidden`
 
@@ -726,7 +727,7 @@ If the rate limit is exceeded, the server will respond with a `429 Too Many Requ
     }
     ```
 
-  > **Note:** The safety records will be returned in the response (`data` field).
+    > **Note:** The safety records will be returned in the response (`data` field).
 
   - **Status:** `400 Bad Request`
 
@@ -1494,7 +1495,7 @@ If the rate limit is exceeded, the server will respond with a `429 Too Many Requ
     }
     ```
 
-  > **Note:** The grades will be returned in the response (`data` field).
+    > **Note:** The grades will be returned in the response (`data` field).
 
   - **Status:** `500 Internal Server Error`
 
@@ -1510,3 +1511,65 @@ If the rate limit is exceeded, the server will respond with a `429 Too Many Requ
     ```
 
 > **Note:** The endpoint is protected, and the user must be authenticated to access it. The user can only get grades for their own account.
+
+#### Get Grade
+
+- **URL:** `/api/grades/:id`
+- **Method:** `GET`
+
+- **Request Parameters**:
+
+  - `id`: The ID of the grade to get.
+
+- **Response**:
+
+  - **Status:** `200 OK`
+
+    ```json
+    {
+      "status": "success",
+      "data": {},
+      "message": "Grade retrieved successfully."
+    }
+    ```
+
+    > **Note:** The grade data will be returned in the response (`data` field).
+
+  - **Status:** `404 Not Found`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Grade not found.",
+      "error": {
+        "code": "GRADE_NOT_FOUND",
+        "details": {}
+      }
+    }
+    ```
+
+  - **Status:** `403 Forbidden`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Forbidden to get grade for this user.",
+      "error": {
+        "code": "ACCESS_DENIED",
+        "details": {}
+      }
+    }
+    ```
+
+  - **Status:** `500 Internal Server Error`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Error getting grade.",
+      "error": {
+        "code": "GET_GRADE_ERROR",
+        "details": {}
+      }
+    }
+    ```
