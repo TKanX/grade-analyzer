@@ -380,6 +380,56 @@ const deleteGrade = async (req, res) => {
   }
 };
 
+/**
+ * @function exportGrade - Export a grade (semester/quarter) by ID.
+ * @param {Request} req - The request object.
+ * @param {Response} res - The response object.
+ */
+const exportGrade = async (req, res) => {
+  const { userId } = req.user;
+  const { id } = req.params;
+
+  try {
+    const grade = await gradeService.getGradeById(id);
+    if (!grade) {
+      return res.notFound('Grade not found.', 'GRADE_NOT_FOUND');
+    }
+
+    // Check if user is not the same as the requested user
+    if (grade.userId.toString() !== userId) {
+      return res.forbidden(
+        'Forbidden to export grade for this user.',
+        'ACCESS_DENIED',
+      );
+    }
+
+    // Export the grade
+    const exportedGrade = (await gradeService.getGradeById(id)).toJSON();
+
+    // Set the response headers for the exported grade
+    res.setHeader('Content-Type', 'application/json');
+    res.setHeader(
+      'Content-Disposition',
+      `attachment; filename=${encodeURIComponent(exportedGrade.name)}.json`,
+    );
+
+    // Remove unnecessary fields from the exported grade
+    delete exportedGrade.__v; // Remove __v field
+    delete exportedGrade._id; // Remove _id field
+    delete exportedGrade.userId; // Remove userId field
+    delete exportedGrade.createdAt; // Remove createdAt field
+    delete exportedGrade.updatedAt; // Remove updatedAt field
+
+    return res.send(exportedGrade);
+  } catch (error) {
+    console.error('Error exporting grade: ', error);
+    return res.internalServerError(
+      'Error exporting grade.',
+      'EXPORT_GRADE_ERROR',
+    );
+  }
+};
+
 module.exports = {
   createGrade,
   getGrades,
@@ -387,4 +437,5 @@ module.exports = {
   updateGrade,
   updateGradeFields,
   deleteGrade,
+  exportGrade,
 };

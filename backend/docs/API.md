@@ -63,6 +63,7 @@ If the rate limit is exceeded, the server will respond with a `429 Too Many Requ
       - [Update Grade](#update-grade)
       - [Update Grade (Partial (JSON Patch))](#update-grade-partial-json-patch)
       - [Delete Grade](#delete-grade)
+      - [Export Grade](#export-grade)
 
 ### Authentication Endpoints
 
@@ -1910,3 +1911,59 @@ If the rate limit is exceeded, the server will respond with a `429 Too Many Requ
     ```
 
 > **Note:** The endpoint is protected, and the user must be authenticated to access it. The user can only delete their own grade.
+
+#### Export Grade
+
+- **URL:** `/api/grades/:id/export`
+- **Method:** `GET`
+
+- **Request Parameters**:
+
+  - `id`: The ID of the grade to export.
+
+- **Response**:
+
+  - **Status:** `200 OK`
+
+    > **Note:** The response will be a JSON file with the grade data.
+
+  - **Status:** `404 Not Found`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Grade not found.",
+      "error": {
+        "code": "GRADE_NOT_FOUND",
+        "details": {}
+      }
+    }
+    ```
+
+  - **Status:** `403 Forbidden`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Forbidden to export grade for this user.",
+      "error": {
+        "code": "ACCESS_DENIED",
+        "details": {}
+      }
+    }
+    ```
+
+  - **Status:** `500 Internal Server Error`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Error exporting grade.",
+      "error": {
+        "code": "EXPORT_GRADE_ERROR",
+        "details": {}
+      }
+    }
+    ```
+
+> **Note:** The endpoint is protected, and the user must be authenticated to access it. The user can only export grades for their own account.
