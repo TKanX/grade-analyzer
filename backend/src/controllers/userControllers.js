@@ -416,7 +416,7 @@ const updateSettings = async (req, res) => {
   // Check if the GPA goal is valid
   if (
     settings.goals?.gpa !== undefined &&
-    !typeof settings.goals.gpa === 'number'
+    !(typeof settings.goals.gpa === 'number' && settings.goals.gpa >= 0)
   ) {
     return res.badRequest('Invalid GPA goal.', 'INVALID_GPA_GOAL');
   }
@@ -424,7 +424,10 @@ const updateSettings = async (req, res) => {
   // Check if the weighted GPA goal is valid
   if (
     settings.goals?.weightedGPA !== undefined &&
-    !typeof settings.goals.weightedGPA === 'number'
+    !(
+      typeof settings.goals.weightedGPA === 'number' &&
+      settings.goals.weightedGPA >= 0
+    )
   ) {
     return res.badRequest(
       'Invalid weighted GPA goal.',
