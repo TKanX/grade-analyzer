@@ -26,6 +26,18 @@ const settingsSchema = new mongoose.Schema(
       required: true,
       default: 'system',
     },
+    goals: {
+      gpa: {
+        type: Number,
+        required: true,
+        default: 4.0,
+      },
+      weightedGPA: {
+        type: Number,
+        required: true,
+        default: 4.0,
+      },
+    },
   },
   {
     _id: false,
