@@ -120,6 +120,29 @@ const deleteGradeById = async (gradeId) => {
   }
 };
 
+/**
+ * @function importGrades - Import grades from a file.
+ * @param {string} userId - The user ID to import grades for.
+ * @param {Array} grades - The grades to import.
+ * @returns {Promise<Array>} - An array of imported grade objects.
+ * @throws {Error} - Throws an error if the grades fail to import.
+ */
+const importGrades = async (userId, grades) => {
+  try {
+    const gradesWithoutExcludedFields = grades.map(
+      ({ __v, _id, startDate, endDate, ...grade }) => ({
+        ...grade,
+        userId,
+      }),
+    );
+    const importedGrades = await Grade.insertMany(gradesWithoutExcludedFields);
+    return importedGrades;
+  } catch (error) {
+    console.error('Error in importing grades: ', error);
+    throw error;
+  }
+};
+
 module.exports = {
   createGrade,
   getGrades,
@@ -127,4 +150,5 @@ module.exports = {
   getGradeById,
   updateGradeById,
   deleteGradeById,
+  importGrades,
 };
