@@ -420,12 +420,51 @@ const exportGrade = async (req, res) => {
     delete exportedGrade.createdAt; // Remove createdAt field
     delete exportedGrade.updatedAt; // Remove updatedAt field
 
-    return res.send(exportedGrade);
+    return res.send([exportedGrade]);
   } catch (error) {
     console.error('Error exporting grade: ', error);
     return res.internalServerError(
       'Error exporting grade.',
       'EXPORT_GRADE_ERROR',
+    );
+  }
+};
+
+/**
+ * @function exportGrades - Export all grades (semesters/quarters) for a user.
+ * @param {Request} req - The request object.
+ * @param {Response} res - The response object.
+ */
+const exportGrades = async (req, res) => {
+  const { userId } = req.user;
+
+  try {
+    const grades = await gradeService.getDetailedGrades(userId);
+
+    // Export the grades
+    const exportedGrades = grades.map((grade) => {
+      const exportedGrade = grade.toJSON();
+
+      // Remove unnecessary fields from the exported grade
+      delete exportedGrade.__v; // Remove __v field
+      delete exportedGrade._id; // Remove _id field
+      delete exportedGrade.userId; // Remove userId field
+      delete exportedGrade.createdAt; // Remove createdAt field
+      delete exportedGrade.updatedAt; // Remove updatedAt field
+
+      return exportedGrade;
+    });
+
+    // Set the response headers for the exported grades
+    res.setHeader('Content-Type', 'application/json');
+    res.setHeader('Content-Disposition', 'attachment; filename=grades.json');
+
+    return res.send(exportedGrades);
+  } catch (error) {
+    console.error('Error exporting grades: ', error);
+    return res.internalServerError(
+      'Error exporting grades.',
+      'EXPORT_GRADES_ERROR',
     );
   }
 };
@@ -438,4 +477,5 @@ module.exports = {
   updateGradeFields,
   deleteGrade,
   exportGrade,
+  exportGrades,
 };

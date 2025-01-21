@@ -14,6 +14,9 @@ router.use(rateLimiter());
 
 router.post('/', gradeControllers.createGrade);
 
+router.get('/:id/export', gradeControllers.exportGrade);
+router.get('/export', gradeControllers.exportGrades);
+
 router.get('/', gradeControllers.getGrades);
 router.get('/:id', gradeControllers.getGrade);
 
@@ -21,7 +24,5 @@ router.put('/:id', gradeControllers.updateGrade);
 router.patch('/:id', gradeControllers.updateGradeFields); // JSON Patch
 
 router.delete('/:id', gradeControllers.deleteGrade);
-
-router.get('/:id/export', gradeControllers.exportGrade);
 
 module.exports = router;

@@ -64,6 +64,7 @@ If the rate limit is exceeded, the server will respond with a `429 Too Many Requ
       - [Update Grade (Partial (JSON Patch))](#update-grade-partial-json-patch)
       - [Delete Grade](#delete-grade)
       - [Export Grade](#export-grade)
+      - [Export Grades (All)](#export-grades-all)
 
 ### Authentication Endpoints
 
@@ -1967,3 +1968,29 @@ If the rate limit is exceeded, the server will respond with a `429 Too Many Requ
     ```
 
 > **Note:** The endpoint is protected, and the user must be authenticated to access it. The user can only export grades for their own account.
+
+#### Export Grades (All)
+
+- **URL:** `/api/grades/export`
+- **Method:** `GET`
+
+- **Response**:
+
+  - **Status:** `200 OK`
+
+    > **Note:** The response will be a JSON file with all the grade data.
+
+  - **Status:** `500 Internal Server Error`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Error exporting grades.",
+      "error": {
+        "code": "EXPORT_GRADES_ERROR",
+        "details": {}
+      }
+    }
+    ```
+
+> **Note:** The endpoint is protected, and the user must be authenticated to access it.
