@@ -30,11 +30,13 @@ const settingsSchema = new mongoose.Schema(
       gpa: {
         type: Number,
         required: true,
+        min: 0,
         default: 4.0,
       },
       weightedGPA: {
         type: Number,
         required: true,
+        min: 0,
         default: 4.0,
       },
     },

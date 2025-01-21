@@ -135,10 +135,12 @@ const gradeSchema = new mongoose.Schema(
       gpa: {
         type: Number,
         required: false,
+        min: 0,
       },
       weightedGPA: {
         type: Number,
         required: false,
+        min: 0,
       },
     },
     gradeRange: {
@@ -155,14 +157,17 @@ const gradeSchema = new mongoose.Schema(
           GPA: {
             type: Number,
             required: true,
+            min: 0,
           },
           honorsGPA: {
             type: Number,
             required: true,
+            min: 0,
           },
           advancedGPA: {
             type: Number,
             required: true,
+            min: 0,
           },
           _id: false,
         },
