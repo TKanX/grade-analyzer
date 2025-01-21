@@ -15,10 +15,12 @@ const taskSchema = new mongoose.Schema(
     score: {
       type: Number,
       required: true,
+      default: null,
     },
     total: {
       type: Number,
       required: true,
+      default: null,
     },
     extraCredit: {
       type: Boolean,
@@ -51,7 +53,7 @@ const categorySchema = new mongoose.Schema(
     percentage: {
       type: Number,
       required: false,
-      default: 0,
+      default: null,
     },
     goal: {
       type: Number,
@@ -87,7 +89,7 @@ const courseSchema = new mongoose.Schema(
     percentage: {
       type: Number,
       required: false,
-      default: 0,
+      default: null,
     },
     goal: {
       type: Number,
