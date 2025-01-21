@@ -20,4 +20,6 @@ router.get('/:id', gradeControllers.getGrade);
 router.put('/:id', gradeControllers.updateGrade);
 router.patch('/:id', gradeControllers.updateGradeFields); // JSON Patch
 
+router.delete('/:id', gradeControllers.deleteGrade);
+
 module.exports = router;

@@ -62,6 +62,7 @@ If the rate limit is exceeded, the server will respond with a `429 Too Many Requ
       - [Get Grade](#get-grade)
       - [Update Grade](#update-grade)
       - [Update Grade (Partial (JSON Patch))](#update-grade-partial-json-patch)
+      - [Delete Grade](#delete-grade)
 
 ### Authentication Endpoints
 
@@ -1845,3 +1846,67 @@ If the rate limit is exceeded, the server will respond with a `429 Too Many Requ
     ```
 
 > **Note:** The endpoint is protected, and the user must be authenticated to access it. The user can only update their own grade.
+
+#### Delete Grade
+
+- **URL:** `/api/grades/:id`
+- **Method:** `DELETE`
+
+- **Request Parameters**:
+
+  - `id`: The ID of the grade to delete.
+
+- **Response**:
+
+  - **Status:** `200 OK`
+
+    ```json
+    {
+      "status": "success",
+      "data": {},
+      "message": "Grade deleted successfully."
+    }
+    ```
+
+    > **Note:** The deleted grade data will be returned in the response (`data` field).
+
+  - **Status:** `404 Not Found`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Grade not found.",
+      "error": {
+        "code": "GRADE_NOT_FOUND",
+        "details": {}
+      }
+    }
+    ```
+
+  - **Status:** `403 Forbidden`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Forbidden to delete this grade.",
+      "error": {
+        "code": "ACCESS_DENIED",
+        "details": {}
+      }
+    }
+    ```
+
+  - **Status:** `500 Internal Server Error`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Error deleting grade.",
+      "error": {
+        "code": "DELETE_GRADE_ERROR",
+        "details": {}
+      }
+    }
+    ```
+
+> **Note:** The endpoint is protected, and the user must be authenticated to access it. The user can only delete their own grade.

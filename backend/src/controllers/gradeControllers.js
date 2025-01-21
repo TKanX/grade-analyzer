@@ -347,10 +347,44 @@ const updateGradeFields = async (req, res) => {
   }
 };
 
+/**
+ * @function deleteGrade - Delete a grade (semester/quarter) by ID.
+ * @param {Request} req - The request object.
+ * @param {Response} res - The response object.
+ */
+const deleteGrade = async (req, res) => {
+  const { userId } = req.user;
+  const { id } = req.params;
+
+  try {
+    // First check if grade exists and belongs to user
+    const existingGrade = await gradeService.getGradeById(id);
+    if (!existingGrade) {
+      return res.notFound('Grade not found.', 'GRADE_NOT_FOUND');
+    }
+
+    // Check if user is not the same as the requested user
+    if (existingGrade.userId.toString() !== userId) {
+      return res.forbidden('Forbidden to delete this grade.', 'ACCESS_DENIED');
+    }
+
+    // If permission check passes, proceed with delete
+    await gradeService.deleteGradeById(id);
+    return res.success(null, 'Grade deleted successfully.');
+  } catch (error) {
+    console.error('Error deleting grade: ', error);
+    return res.internalServerError(
+      'Error deleting grade.',
+      'DELETE_GRADE_ERROR',
+    );
+  }
+};
+
 module.exports = {
   createGrade,
   getGrades,
   getGrade,
   updateGrade,
   updateGradeFields,
+  deleteGrade,
 };
