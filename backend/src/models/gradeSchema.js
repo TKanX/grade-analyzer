@@ -53,6 +53,10 @@ const categorySchema = new mongoose.Schema(
       required: false,
       default: 0,
     },
+    goal: {
+      type: Number,
+      required: false,
+    },
   },
   {
     _id: false,
@@ -84,6 +88,10 @@ const courseSchema = new mongoose.Schema(
       type: Number,
       required: false,
       default: 0,
+    },
+    goal: {
+      type: Number,
+      required: false,
     },
   },
   {
@@ -120,6 +128,16 @@ const gradeSchema = new mongoose.Schema(
       enum: ['continuous', 'discrete'], // continuous: percentage -> GPAs AND percentage -> letter, discrete: percentage -> letter -> GPAs
       required: false,
       default: 'discrete',
+    },
+    goals: {
+      gpa: {
+        type: Number,
+        required: false,
+      },
+      weightedGPA: {
+        type: Number,
+        required: false,
+      },
     },
     gradeRange: {
       type: [
