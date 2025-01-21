@@ -373,6 +373,10 @@ const updateSettings = async (req, res) => {
     timeFormat: req.body.timeFormat,
     dateFormat: req.body.dateFormat,
     theme: req.body.theme,
+    goals: {
+      gpa: req.body.goals?.gpa,
+      weightedGPA: req.body.goals?.weightedGPA,
+    },
   };
 
   // Check if user is not the same as the requested user
@@ -407,6 +411,25 @@ const updateSettings = async (req, res) => {
     !validationUtils.validateTheme(settings.theme)
   ) {
     return res.badRequest('Invalid theme.', 'INVALID_THEME');
+  }
+
+  // Check if the GPA goal is valid
+  if (
+    settings.goals?.gpa !== undefined &&
+    !typeof settings.goals.gpa === 'number'
+  ) {
+    return res.badRequest('Invalid GPA goal.', 'INVALID_GPA_GOAL');
+  }
+
+  // Check if the weighted GPA goal is valid
+  if (
+    settings.goals?.weightedGPA !== undefined &&
+    !typeof settings.goals.weightedGPA === 'number'
+  ) {
+    return res.badRequest(
+      'Invalid weighted GPA goal.',
+      'INVALID_WEIGHTED_GPA_GOAL',
+    );
   }
 
   // Update settings

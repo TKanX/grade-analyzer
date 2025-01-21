@@ -1306,11 +1306,15 @@ If the rate limit is exceeded, the server will respond with a `429 Too Many Requ
   {
     "timeFormat": "12h",
     "dateFormat": "MM-DD-YYYY",
-    "theme": "system"
+    "theme": "system",
+    "goals": {
+      "gpa": 4.0,
+      "weightedGPA": 4.0
+    }
   }
   ```
 
-  > **Note:** The new settings to update. Fields are optional. `timeFormat` can be "12h" or "24h", `dateFormat` can be "MM-DD-YYYY" or "DD-MM-YYYY" or "YYYY-MM-DD", and `theme` can be "light", "dark", or "system".
+  > **Note:** The new settings to update. Fields are optional. `timeFormat` can be "12h" or "24h", `dateFormat` can be "MM-DD-YYYY" or "DD-MM-YYYY" or "YYYY-MM-DD", `theme` can be "light", "dark", or "system", and `goals` is an object with `gpa` and `weightedGPA` fields.
 
 - **Response**:
 
@@ -1360,6 +1364,32 @@ If the rate limit is exceeded, the server will respond with a `429 Too Many Requ
       "message": "Invalid theme.",
       "error": {
         "code": "INVALID_THEME",
+        "details": {}
+      }
+    }
+    ```
+
+  - **Status:** `400 Bad Request`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Invalid GPA goal.",
+      "error": {
+        "code": "INVALID_GPA_GOAL",
+        "details": {}
+      }
+    }
+    ```
+
+  - **Status:** `400 Bad Request`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Invalid weighted GPA goal.",
+      "error": {
+        "code": "INVALID_WEIGHTED_GPA_GOAL",
         "details": {}
       }
     }
