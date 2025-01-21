@@ -16,6 +16,7 @@ router.post('/', gradeControllers.createGrade);
 
 router.get('/:id/export', gradeControllers.exportGrade);
 router.get('/export', gradeControllers.exportGrades);
+router.post('/import', gradeControllers.importGrades);
 
 router.get('/', gradeControllers.getGrades);
 router.get('/:id', gradeControllers.getGrade);

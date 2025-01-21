@@ -130,7 +130,7 @@ const deleteGradeById = async (gradeId) => {
 const importGrades = async (userId, grades) => {
   try {
     const gradesWithoutExcludedFields = grades.map(
-      ({ __v, _id, startDate, endDate, ...grade }) => ({
+      ({ __v, _id, createdAt, updatedAt, ...grade }) => ({
         ...grade,
         userId,
       }),

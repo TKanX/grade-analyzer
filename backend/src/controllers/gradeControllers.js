@@ -469,6 +469,23 @@ const exportGrades = async (req, res) => {
   }
 };
 
+const importGrades = async (req, res) => {
+  const { userId } = req.user;
+  const grades = req.body;
+
+  // Import the grades
+  try {
+    const importedGrades = await gradeService.importGrades(userId, grades);
+    return res.success(importedGrades, 'Grades imported successfully.');
+  } catch (error) {
+    console.error('Error importing grades: ', error);
+    return res.internalServerError(
+      'Error importing grades.',
+      'IMPORT_GRADES_ERROR',
+    );
+  }
+};
+
 module.exports = {
   createGrade,
   getGrades,
@@ -478,4 +495,5 @@ module.exports = {
   deleteGrade,
   exportGrade,
   exportGrades,
+  importGrades,
 };

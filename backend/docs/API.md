@@ -65,6 +65,7 @@ If the rate limit is exceeded, the server will respond with a `429 Too Many Requ
       - [Delete Grade](#delete-grade)
       - [Export Grade](#export-grade)
       - [Export Grades (All)](#export-grades-all)
+      - [Import Grades](#import-grades)
 
 ### Authentication Endpoints
 
@@ -1988,6 +1989,44 @@ If the rate limit is exceeded, the server will respond with a `429 Too Many Requ
       "message": "Error exporting grades.",
       "error": {
         "code": "EXPORT_GRADES_ERROR",
+        "details": {}
+      }
+    }
+    ```
+
+> **Note:** The endpoint is protected, and the user must be authenticated to access it.
+
+#### Import Grades
+
+- **URL:** `/api/grades/import`
+- **Method:** `POST`
+
+- **Request Body**:
+
+  > **Note:** The request body should be the JSON file with the grade data. (array of grade objects)
+
+- **Response**:
+
+  - **Status:** `200 OK`
+
+    ```json
+    {
+      "status": "success",
+      "data": [],
+      "message": "Grades imported successfully."
+    }
+    ```
+
+    > **Note:** The imported grade data will be returned in the response (`data` field).
+
+  - **Status:** `500 Internal Server Error`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Error importing grades.",
+      "error": {
+        "code": "IMPORT_GRADES_ERROR",
         "details": {}
       }
     }
