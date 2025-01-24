@@ -210,6 +210,9 @@ const updateGradeFields = async (req, res) => {
           'ACCESS_DENIED',
         );
       }
+      if (path.includes('__proto__') || path.includes('constructor') || path.includes('prototype')) {
+        return res.badRequest(`Invalid path: ${path}`, 'INVALID_PATH');
+      }
 
       const keys = path.slice(1).split('/'); // Convert '/key1/key2' to ['key1', 'key2']
       let target = updatedGrade;
