@@ -14,13 +14,13 @@ const taskSchema = new mongoose.Schema(
     },
     score: {
       type: Number,
-      required: true,
+      required: false,
       default: null,
     },
     total: {
       type: Number,
       required: true,
-      default: null,
+      default: 0,
     },
     extraCredit: {
       type: Boolean,
