@@ -56,6 +56,16 @@ If the rate limit is exceeded, the server will respond with a `429 Too Many Requ
       - [Update Password](#update-password)
       - [Update Profile](#update-profile)
       - [Update Settings](#update-settings)
+    - [Grade Endpoints](#grade-endpoints)
+      - [Create Grade](#create-grade)
+      - [Get Grades](#get-grades)
+      - [Get Grade](#get-grade)
+      - [Update Grade](#update-grade)
+      - [Update Grade (Partial (JSON Patch))](#update-grade-partial-json-patch)
+      - [Delete Grade](#delete-grade)
+      - [Export Grade](#export-grade)
+      - [Export Grades (All)](#export-grades-all)
+      - [Import Grades](#import-grades)
 
 ### Authentication Endpoints
 
@@ -616,7 +626,7 @@ If the rate limit is exceeded, the server will respond with a `429 Too Many Requ
     }
     ```
 
-  > **Note:** The user data will be returned in the response (`data` field).
+    > **Note:** The user data will be returned in the response (`data` field).
 
   - **Status:** `404 Not Found`
 
@@ -667,7 +677,7 @@ If the rate limit is exceeded, the server will respond with a `429 Too Many Requ
     }
     ```
 
-  > **Note:** The settings will be returned in the response (`data` field).
+    > **Note:** The settings will be returned in the response (`data` field).
 
   - **Status:** `403 Forbidden`
 
@@ -723,7 +733,7 @@ If the rate limit is exceeded, the server will respond with a `429 Too Many Requ
     }
     ```
 
-  > **Note:** The safety records will be returned in the response (`data` field).
+    > **Note:** The safety records will be returned in the response (`data` field).
 
   - **Status:** `400 Bad Request`
 
@@ -1296,11 +1306,15 @@ If the rate limit is exceeded, the server will respond with a `429 Too Many Requ
   {
     "timeFormat": "12h",
     "dateFormat": "MM-DD-YYYY",
-    "theme": "system"
+    "theme": "system",
+    "goals": {
+      "gpa": 4.0,
+      "weightedGPA": 4.0
+    }
   }
   ```
 
-  > **Note:** The new settings to update. Fields are optional. `timeFormat` can be "12h" or "24h", `dateFormat` can be "MM-DD-YYYY" or "DD-MM-YYYY" or "YYYY-MM-DD", and `theme` can be "light", "dark", or "system".
+  > **Note:** The new settings to update. Fields are optional. `timeFormat` can be "12h" or "24h", `dateFormat` can be "MM-DD-YYYY" or "DD-MM-YYYY" or "YYYY-MM-DD", `theme` can be "light", "dark", or "system", and `goals` is an object with `gpa` and `weightedGPA` fields.
 
 - **Response**:
 
@@ -1355,6 +1369,32 @@ If the rate limit is exceeded, the server will respond with a `429 Too Many Requ
     }
     ```
 
+  - **Status:** `400 Bad Request`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Invalid GPA goal.",
+      "error": {
+        "code": "INVALID_GPA_GOAL",
+        "details": {}
+      }
+    }
+    ```
+
+  - **Status:** `400 Bad Request`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Invalid weighted GPA goal.",
+      "error": {
+        "code": "INVALID_WEIGHTED_GPA_GOAL",
+        "details": {}
+      }
+    }
+    ```
+
   - **Status:** `403 Forbidden`
 
     ```json
@@ -1382,3 +1422,644 @@ If the rate limit is exceeded, the server will respond with a `429 Too Many Requ
     ```
 
 > **Note:** The endpoint is protected, and the user must be authenticated to access it. The user can only update their own settings.
+
+### Grade Endpoints
+
+#### Create Grade
+
+- **URL:** `/api/grades`
+- **Method:** `POST`
+
+- **Request Body**:
+
+  ```json
+  {
+    "name": "grade_name",
+    "startDate": "start_date",
+    "endDate": "end_date"
+  }
+  ```
+
+  > **Note:** The grade name, start date, and end date to create. The `name` is a string, `startDate` and `endDate` is a date string (e.g., "2000-01-01") (optional).
+
+- **Response**:
+
+  - **Status:** `200 OK`
+
+    ```json
+    {
+      "status": "success",
+      "data": {},
+      "message": "Grade created successfully."
+    }
+    ```
+
+    > **Note:** The created grade data will be returned in the response (`data` field).
+
+  - **Status:** `400 Bad Request`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Invalid grade name.",
+      "error": {
+        "code": "INVALID_GRADE_NAME",
+        "details": {}
+      }
+    }
+    ```
+
+  - **Status:** `400 Bad Request`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Invalid start date.",
+      "error": {
+        "code": "INVALID_START_DATE",
+        "details": {}
+      }
+    }
+    ```
+
+  - **Status:** `400 Bad Request`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Invalid end date.",
+      "error": {
+        "code": "INVALID_END_DATE",
+        "details": {}
+      }
+    }
+    ```
+
+  - **Status:** `500 Internal Server Error`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Error creating grade.",
+      "error": {
+        "code": "CREATE_GRADE_ERROR",
+        "details": {}
+      }
+    }
+    ```
+
+> **Note:** The endpoint is protected, and the user must be authenticated to access it.
+
+#### Get Grades
+
+- **URL:** `/api/grades`
+- **Method:** `GET`
+
+- **Query Parameters**:
+
+  - `detailed`: Whether to return detailed grade information (default: false).
+
+- **Response**:
+
+  - **Status:** `200 OK`
+
+    ```json
+    {
+      "status": "success",
+      "data": [],
+      "message": "Grades retrieved successfully."
+    }
+    ```
+
+    > **Note:** The grades will be returned in the response (`data` field).
+
+  - **Status:** `500 Internal Server Error`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Error getting grades.",
+      "error": {
+        "code": "GET_GRADES_ERROR",
+        "details": {}
+      }
+    }
+    ```
+
+> **Note:** The endpoint is protected, and the user must be authenticated to access it. The user can only get grades for their own account.
+
+#### Get Grade
+
+- **URL:** `/api/grades/:id`
+- **Method:** `GET`
+
+- **Request Parameters**:
+
+  - `id`: The ID of the grade to get.
+
+- **Response**:
+
+  - **Status:** `200 OK`
+
+    ```json
+    {
+      "status": "success",
+      "data": {},
+      "message": "Grade retrieved successfully."
+    }
+    ```
+
+    > **Note:** The grade data will be returned in the response (`data` field).
+
+  - **Status:** `404 Not Found`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Grade not found.",
+      "error": {
+        "code": "GRADE_NOT_FOUND",
+        "details": {}
+      }
+    }
+    ```
+
+  - **Status:** `403 Forbidden`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Forbidden to get grade for this user.",
+      "error": {
+        "code": "ACCESS_DENIED",
+        "details": {}
+      }
+    }
+    ```
+
+  - **Status:** `500 Internal Server Error`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Error getting grade.",
+      "error": {
+        "code": "GET_GRADE_ERROR",
+        "details": {}
+      }
+    }
+    ```
+
+> **Note:** The endpoint is protected, and the user must be authenticated to access it. The user can only get grades for their own account.
+
+#### Update Grade
+
+- **URL:** `/api/grades/:id`
+- **Method:** `PUT`
+
+- **Request Parameters**:
+
+  - `id`: The ID of the grade to update.
+
+- **Request Body**:
+
+  ```json
+  {
+    "name": "new_grade_name",
+    "startDate": "new_start_date",
+    "endDate": "new_end_date",
+    "courses": [],
+    "gradingMode": "new_grading_mode",
+    "gradingRange": []
+  }
+  ```
+
+  > **Note:** The new grade information to update. Fields are optional. `name` is a string, `startDate` and `endDate` is a date string (e.g., "2000-01-01"), `courses` is the course objects, `gradingMode` is a string ("continuous" or "discrete"), and `gradingRange` is the grading range objects. (Details of the course and grading range objects can be found in the `src/models/gradeSchema.js` file.)
+
+- **Response**:
+
+  - **Status:** `200 OK`
+
+    ```json
+    {
+      "status": "success",
+      "data": {},
+      "message": "Grade updated successfully."
+    }
+    ```
+
+    > **Note:** The updated grade data will be returned in the response (`data` field).
+
+  - **Status:** `400 Bad Request`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Invalid grade name.",
+      "error": {
+        "code": "INVALID_GRADE_NAME",
+        "details": {}
+      }
+    }
+    ```
+
+  - **Status:** `400 Bad Request`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Invalid start date.",
+      "error": {
+        "code": "INVALID_START_DATE",
+        "details": {}
+      }
+    }
+    ```
+
+  - **Status:** `400 Bad Request`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Invalid end date.",
+      "error": {
+        "code": "INVALID_END_DATE",
+        "details": {}
+      }
+    }
+    ```
+
+  - **Status:** `404 Not Found`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Grade not found.",
+      "error": {
+        "code": "GRADE_NOT_FOUND",
+        "details": {}
+      }
+    }
+    ```
+
+  - **Status:** `403 Forbidden`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Forbidden to update this grade.",
+      "error": {
+        "code": "ACCESS_DENIED",
+        "details": {}
+      }
+    }
+    ```
+
+  - **Status:** `500 Internal Server Error`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Error updating grade.",
+      "error": {
+        "code": "UPDATE_GRADE_ERROR",
+        "details": {}
+      }
+    }
+    ```
+
+> **Note:** The endpoint is protected, and the user must be authenticated to access it. The user can only update their own grade.
+
+#### Update Grade (Partial (JSON Patch))
+
+- **URL:** `/api/grades/:id`
+- **Method:** `PATCH` **(JSON Patch - RFC 6902)**
+
+- **Request Parameters**:
+
+  - `id`: The ID of the grade to update.
+
+- **Request Body**:
+
+  ```json
+  []
+  ```
+
+  > **Note:** The JSON Patch object to update the grade. `/id`, `__v`, `userId`, `createdAt`, and `updatedAt` fields cannot be updated. (Details of the JSON Patch object can be found in the `src/models/gradeSchema.js` file.)
+
+- **Response**:
+
+  - **Status:** `200 OK`
+
+    ```json
+    {
+      "status": "success",
+      "data": {},
+      "message": "Grade updated successfully."
+    }
+    ```
+
+    > **Note:** The updated grade data will be returned in the response (`data` field). The response data will not be detailed.
+
+  - **Status:** `400 Bad Request`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Invalid path: <path>.",
+      "error": {
+        "code": "INVALID_PATH",
+        "details": {}
+      }
+    }
+    ```
+
+  - **Status:** `400 Bad Request`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Missing 'from' in copy operation.",
+      "error": {
+        "code": "INVALID_OPERATION",
+        "details": {}
+      }
+    }
+    ```
+
+  - **Status:** `400 Bad Request`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Invalid from path: <path>.",
+      "error": {
+        "code": "INVALID_FROM_PATH",
+        "details": {}
+      }
+    }
+    ```
+
+  - **Status:** `400 Bad Request`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Missing 'from' in move operation.",
+      "error": {
+        "code": "INVALID_OPERATION",
+        "details": {}
+      }
+    }
+    ```
+
+  - **Status:** `400 Bad Request`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Test operation failed at path: <path>.",
+      "error": {
+        "code": "TEST_FAILED",
+        "details": {}
+      }
+    }
+    ```
+
+  - **Status:** `400 Bad Request`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Unsupported operation: <operation>.",
+      "error": {
+        "code": "INVALID_OPERATION",
+        "details": {}
+      }
+    }
+    ```
+
+  - **Status:** `404 Not Found`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Grade not found.",
+      "error": {
+        "code": "GRADE_NOT_FOUND",
+        "details": {}
+      }
+    }
+    ```
+
+  - **Status:** `403 Forbidden`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Forbidden to update this grade.",
+      "error": {
+        "code": "ACCESS_DENIED",
+        "details": {}
+      }
+    }
+    ```
+
+  - **Status:** `500 Internal Server Error`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Error updating grade fields.",
+      "error": {
+        "code": "UPDATE_GRADE_FIELDS_ERROR",
+        "details": {}
+      }
+    }
+    ```
+
+> **Note:** The endpoint is protected, and the user must be authenticated to access it. The user can only update their own grade.
+
+#### Delete Grade
+
+- **URL:** `/api/grades/:id`
+- **Method:** `DELETE`
+
+- **Request Parameters**:
+
+  - `id`: The ID of the grade to delete.
+
+- **Response**:
+
+  - **Status:** `200 OK`
+
+    ```json
+    {
+      "status": "success",
+      "data": {},
+      "message": "Grade deleted successfully."
+    }
+    ```
+
+    > **Note:** The deleted grade data will be returned in the response (`data` field).
+
+  - **Status:** `404 Not Found`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Grade not found.",
+      "error": {
+        "code": "GRADE_NOT_FOUND",
+        "details": {}
+      }
+    }
+    ```
+
+  - **Status:** `403 Forbidden`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Forbidden to delete this grade.",
+      "error": {
+        "code": "ACCESS_DENIED",
+        "details": {}
+      }
+    }
+    ```
+
+  - **Status:** `500 Internal Server Error`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Error deleting grade.",
+      "error": {
+        "code": "DELETE_GRADE_ERROR",
+        "details": {}
+      }
+    }
+    ```
+
+> **Note:** The endpoint is protected, and the user must be authenticated to access it. The user can only delete their own grade.
+
+#### Export Grade
+
+- **URL:** `/api/grades/:id/export`
+- **Method:** `GET`
+
+- **Request Parameters**:
+
+  - `id`: The ID of the grade to export.
+
+- **Response**:
+
+  - **Status:** `200 OK`
+
+    > **Note:** The response will be a JSON file with the grade data.
+
+  - **Status:** `404 Not Found`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Grade not found.",
+      "error": {
+        "code": "GRADE_NOT_FOUND",
+        "details": {}
+      }
+    }
+    ```
+
+  - **Status:** `403 Forbidden`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Forbidden to export grade for this user.",
+      "error": {
+        "code": "ACCESS_DENIED",
+        "details": {}
+      }
+    }
+    ```
+
+  - **Status:** `500 Internal Server Error`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Error exporting grade.",
+      "error": {
+        "code": "EXPORT_GRADE_ERROR",
+        "details": {}
+      }
+    }
+    ```
+
+> **Note:** The endpoint is protected, and the user must be authenticated to access it. The user can only export grades for their own account.
+
+#### Export Grades (All)
+
+- **URL:** `/api/grades/export`
+- **Method:** `GET`
+
+- **Response**:
+
+  - **Status:** `200 OK`
+
+    > **Note:** The response will be a JSON file with all the grade data.
+
+  - **Status:** `500 Internal Server Error`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Error exporting grades.",
+      "error": {
+        "code": "EXPORT_GRADES_ERROR",
+        "details": {}
+      }
+    }
+    ```
+
+> **Note:** The endpoint is protected, and the user must be authenticated to access it.
+
+#### Import Grades
+
+- **URL:** `/api/grades/import`
+- **Method:** `POST`
+
+- **Request Body**:
+
+  > **Note:** The request body should be the JSON file with the grade data. (array of grade objects)
+
+- **Response**:
+
+  - **Status:** `200 OK`
+
+    ```json
+    {
+      "status": "success",
+      "data": [],
+      "message": "Grades imported successfully."
+    }
+    ```
+
+    > **Note:** The imported grade data will be returned in the response (`data` field).
+
+  - **Status:** `500 Internal Server Error`
+
+    ```json
+    {
+      "status": "error",
+      "message": "Error importing grades.",
+      "error": {
+        "code": "IMPORT_GRADES_ERROR",
+        "details": {}
+      }
+    }
+    ```
+
+> **Note:** The endpoint is protected, and the user must be authenticated to access it.

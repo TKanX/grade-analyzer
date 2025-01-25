@@ -44,6 +44,16 @@
         </select>
       </div>
 
+      <!-- GPA Goals Section -->
+      <div class="mb-6">
+        <label class="block text-sm font-medium text-text">GPA Goals</label>
+        <div class="flex items center space-x-4">
+          <!-- GPA Goal, and Weighted GPA Goal Inputs -->
+          <input id="gpa-goal" type="number" class="mt-1 block w-1/2 p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500" placeholder="GPA Goal">
+          <input id="weighted-gpa-goal" type="number" class="mt-1 block w-1/2 p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500" placeholder="Weighted GPA Goal">
+        </div>
+      </div>
+
       <!-- Save Button -->
       <button id="save-settings" class="mt-4 w-full bg-primary-500 text-white px-4 py-2 rounded hover:bg-primary-400 transition-colors duration-200">Save Settings</button>
 
@@ -59,6 +69,8 @@
         document.getElementById("time-format").value = response.data.timeFormat;
         document.getElementById("date-format").value = response.data.dateFormat;
         document.getElementById("theme").value = response.data.theme;
+        document.getElementById("gpa-goal").value = response.data.goals.gpa;
+        document.getElementById("weighted-gpa-goal").value = response.data.goals.weightedGPA;
       }
     });
 
@@ -70,12 +82,18 @@
       const timeFormat = document.getElementById("time-format").value;
       const dateFormat = document.getElementById("date-format").value;
       const theme = document.getElementById("theme").value;
+      const gpaGoal = document.getElementById("gpa-goal").value;
+      const weightedGpaGoal = document.getElementById("weighted-gpa-goal").value;
 
       // Update user settings
       const response = await user.updateSettings({
         timeFormat,
         dateFormat,
-        theme
+        theme,
+        goals: {
+          gpa: gpaGoal,
+          weightedGPA: weightedGpaGoal
+        }
       });
 
       // Notify user of update status

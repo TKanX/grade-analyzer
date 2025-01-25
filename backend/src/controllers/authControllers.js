@@ -106,6 +106,7 @@ const completeRegistration = async (req, res) => {
 
     return res.success(user, 'User created successfully.');
   } catch (error) {
+    console.error('Error creating user: ', error);
     return res.internalServerError('Error creating user.', 'CREATE_USER_ERROR');
   }
 };
@@ -329,6 +330,7 @@ const completeResetPassword = async (req, res) => {
 
     return res.success(updatedUser, 'Password reset successfully.');
   } catch (error) {
+    console.error('Error resetting password: ', error);
     return res.internalServerError(
       'Error resetting password.',
       'RESET_PASSWORD_ERROR',

@@ -30,6 +30,7 @@ const getUser = async (req, res) => {
 
     return res.success(user, 'User found successfully.');
   } catch (error) {
+    console.error('Error getting user: ', error);
     return res.internalServerError('Error getting user.', 'GET_USER_ERROR');
   }
 };
@@ -55,6 +56,7 @@ const getSettings = async (req, res) => {
 
     return res.success(settings, 'Settings found successfully.');
   } catch (error) {
+    console.error('Error getting settings: ', error);
     return res.internalServerError(
       'Error getting settings.',
       'GET_SETTINGS_ERROR',
@@ -99,6 +101,7 @@ const getSafetyRecords = async (req, res) => {
 
     return res.success(safetyRecords, 'Safety records found successfully.');
   } catch (error) {
+    console.error('Error getting safety records: ', error);
     return res.internalServerError(
       'Error getting safety records.',
       'GET_SAFETY_RECORDS_ERROR',
@@ -136,6 +139,7 @@ const updateUsername = async (req, res) => {
     const user = await userService.updateUserById(id, { username });
     return res.success(user, 'Username updated successfully.');
   } catch (error) {
+    console.error('Error updating username: ', error);
     return res.internalServerError(
       'Error updating username.',
       'UPDATE_USERNAME_ERROR',
@@ -176,6 +180,7 @@ const updateEmail = async (req, res) => {
     await emailService.sendEmailVerification(email, token, callbackUrl);
     return res.success(null, 'Email verification sent successfully.');
   } catch (error) {
+    console.error('Error sending verification email: ', error);
     return res.internalServerError(
       'Error sending verification email.',
       'SEND_EMAIL_ERROR',
@@ -225,6 +230,7 @@ const completeEmailUpdate = async (req, res) => {
     const user = await userService.updateUserById(id, { email });
     return res.success(user, 'Email updated successfully.');
   } catch (error) {
+    console.error('Error updating email: ', error);
     return res.internalServerError(
       'Error updating email.',
       'UPDATE_EMAIL_ERROR',
@@ -270,6 +276,7 @@ const updatePassword = async (req, res) => {
     });
     return res.success(null, 'Password updated successfully.');
   } catch (error) {
+    console.error('Error updating password: ', error);
     return res.internalServerError(
       'Error updating password.',
       'UPDATE_PASSWORD_ERROR',
@@ -347,6 +354,7 @@ const updateProfile = async (req, res) => {
     const user = await userService.updateProfileById(id, profile);
     return res.success(user, 'Profile updated successfully.');
   } catch (error) {
+    console.error('Error updating profile: ', error);
     return res.internalServerError(
       'Error updating profile.',
       'UPDATE_PROFILE_ERROR',
@@ -365,6 +373,10 @@ const updateSettings = async (req, res) => {
     timeFormat: req.body.timeFormat,
     dateFormat: req.body.dateFormat,
     theme: req.body.theme,
+    goals: {
+      gpa: req.body.goals?.gpa,
+      weightedGPA: req.body.goals?.weightedGPA,
+    },
   };
 
   // Check if user is not the same as the requested user
@@ -401,11 +413,33 @@ const updateSettings = async (req, res) => {
     return res.badRequest('Invalid theme.', 'INVALID_THEME');
   }
 
+  // Check if the GPA goal is valid
+  if (
+    settings.goals?.gpa !== undefined &&
+    (parseFloat(settings.goals.gpa) === NaN ||
+      parseFloat(settings.goals.gpa) < 0)
+  ) {
+    return res.badRequest('Invalid GPA goal.', 'INVALID_GPA_GOAL');
+  }
+
+  // Check if the weighted GPA goal is valid
+  if (
+    settings.goals?.weightedGPA !== undefined &&
+    (parseFloat(settings.goals.weightedGPA) === NaN ||
+      parseFloat(settings.goals.weightedGPA) < 0)
+  ) {
+    return res.badRequest(
+      'Invalid weighted GPA goal.',
+      'INVALID_WEIGHTED_GPA_GOAL',
+    );
+  }
+
   // Update settings
   try {
     const updatedSettings = await userService.updateSettingsById(id, settings);
     return res.success(updatedSettings, 'Settings updated successfully.');
   } catch (error) {
+    console.error('Error updating settings: ', error);
     return res.internalServerError(
       'Error updating settings.',
       'UPDATE_SETTINGS_ERROR',
