@@ -27,26 +27,8 @@ app.set('view engine', 'ejs');
 app.use('/', routes);
 
 // Start the server
-const server = app.listen(port, host, () => {
+app.listen(port, host, () => {
   console.log(`Frontend server is running on http://${host}:${port}`);
 });
-
-// Handle SIGTERM gracefully
-process.on('SIGTERM', async () => {
-  console.info('SIGTERM signal received.');
-  console.log('Closing frontend server...');
-  await app.close();
-});
-
-// Handle SIGINT gracefully
-process.on('SIGINT', async () => {
-  console.info('SIGINT signal received.');
-  console.log('Closing frontend server...');
-  await app.close();
-});
-
-app.close = async () => {
-  server.close();
-};
 
 module.exports = app;
