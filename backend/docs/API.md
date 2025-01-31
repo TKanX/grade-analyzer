@@ -1896,7 +1896,7 @@ If the rate limit is exceeded, the server will respond with a `429 Too Many Requ
     ```json
     {
       "status": "success",
-      "data": {},
+      "data": null,
       "message": "Grade deleted successfully."
     }
     ```
