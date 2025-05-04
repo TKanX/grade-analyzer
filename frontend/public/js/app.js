@@ -229,7 +229,7 @@ class Auth {
 
     if (!response.ok) {
       this.authenticated = false;
-      this.removeTokens();
+      this.destroy();
       this.app.location.init();
       throw new Error('Invalid or expired token.');
     } else {
